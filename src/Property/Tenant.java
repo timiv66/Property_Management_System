@@ -1,7 +1,7 @@
 package Property;
 
 public class Tenant {
-	private String tenantID, name, email, landlordId;
+	private String tenantID, name, email, password, landlordId;
 	private int phone;
 	
 	public String getTenantID() {
@@ -21,6 +21,12 @@ public class Tenant {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	public String getLandlordId() {
 		return landlordId;
