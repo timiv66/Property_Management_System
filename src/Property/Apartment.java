@@ -3,6 +3,10 @@ package Property;
 public class Apartment {
 	private String name, location, landlordId;
 	private int numOfTenants, numOfStars, maxAmtOfTenants;
+	
+	Landlord landlord = new Landlord();
+	
+	
 	public String getName() {
 		return name;
 	}
