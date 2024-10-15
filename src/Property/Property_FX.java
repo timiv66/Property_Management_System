@@ -24,6 +24,7 @@ public class Property_FX extends Application{
 	//Objects representing users
 	Tenant tenant = new Tenant();
 	Landlord landlord = new Landlord();
+	Apartment apartment = new Apartment();
 	
 	Font titleFont = new Font("Stencil",25);
 	Font btnFont = new Font("Elephant",18);
@@ -38,7 +39,7 @@ public class Property_FX extends Application{
 		// TODO Auto-generated method stub
 		Pane p1 = new Pane();
 		Scene t = new Scene(p1,400,280);
-		t.setRoot(landlordRegApart(t));
+		t.setRoot(login(t));
 		mainStage.setScene(t);
 		mainStage.show();
 		mainStage.setTitle("Property Management");
@@ -307,6 +308,12 @@ public class Property_FX extends Application{
 				if(inputedName.matches("^[A-Z][a-z]+ [A-Z][a-z]+$") && inputedEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
 						&& inputedPassword.matches("[\\w]{7,}"+"[!@#$%&*]{1}") && inputedPhone.matches("^(\\+?\\d{1,3}[-.\\s]?)?(\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4})$")) {
 					landlord.insertLandlordToDB(inputedName, inputedEmail, inputedPassword, inputedPhone);
+					
+					landlord.setName(inputedName);
+					landlord.setEmail(inputedEmail);
+					landlord.setPassword(inputedPassword);
+					landlord.setPhone(inputedPhone);
+					
 					t.setRoot(landlordRegApart(t));
 				//Display error message if format is wrong	
 				}else {
@@ -383,14 +390,14 @@ public class Property_FX extends Application{
 		apartTypeLbl.setTranslateY(137);
 		apartTypeLbl.setFont(btnFont);
 		
-		ChoiceBox<String> cb1 = new ChoiceBox<String>();//choice box for status
-		cb1.getItems().add("High Rise");
-		cb1.getItems().add("Garden");
-		cb1.getItems().add("Walk-Up");
-		cb1.getItems().add("Luxury");
-		cb1.getItems().add("Micro");
-		cb1.setTranslateX(160);
-		cb1.setTranslateY(137);
+		ChoiceBox<String> apartTypeCB = new ChoiceBox<String>();//choice box for status
+		apartTypeCB.getItems().add("High Rise");
+		apartTypeCB.getItems().add("Garden");
+		apartTypeCB.getItems().add("Walk-Up");
+		apartTypeCB.getItems().add("Luxury");
+		apartTypeCB.getItems().add("Micro");
+		apartTypeCB.setTranslateX(160);
+		apartTypeCB.setTranslateY(137);
 		
 		Label starsLbl = new Label("Stars:");
 		starsLbl.setTranslateX(3);
@@ -410,10 +417,28 @@ public class Property_FX extends Application{
 		regApartBtn.setTranslateX(130);
 		regApartBtn.setTranslateY(220);
 		
+		regApartBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				//Inputed apartment information by user
+				String inputedApartName = apartNameTxtF.getText();
+				String inputedLocation = locationTxtF.getText();
+				int inputedMaxAmtOfTenants = Integer.parseInt(maxAmtTxtF.getText());
+				String inputedApartType = apartTypeCB.getValue();
+				int inputedStars = starCB.getValue();
+				
+				//Adding apartment to DB
+				int landlordId = landlord.getLandlordIdFromDB();
+				apartment.insertApartToDB(inputedApartName, inputedLocation, inputedMaxAmtOfTenants, inputedApartType, inputedStars, landlordId);
+			}
+		});
+		
 		Pane landlordRegApartPane = new Pane();
 		
-		landlordRegApartPane.getChildren().addAll(titleLbl,line,apartNameLbl,apartNameTxtF,locationLbl,locationTxtF,maxAmtLbl,maxAmtTxtF,apartTypeLbl,cb1,starsLbl,starCB,regApartBtn);
+		landlordRegApartPane.getChildren().addAll(titleLbl,line,apartNameLbl,apartNameTxtF,locationLbl,locationTxtF,maxAmtLbl,maxAmtTxtF,apartTypeLbl,apartTypeCB,starsLbl,starCB,regApartBtn);
 		return landlordRegApartPane;
 	}
+	
+	
 
 }
