@@ -53,7 +53,6 @@ public class Landlord {
 		this.numOfTenants = numOfTenants;
 	}
 	
-	
 	//Adds new tenant user to the database
 	public void insertLandlordToDB(String name, String email, String password, String phone) {
 		Connection conn = null;
@@ -96,9 +95,7 @@ public class Landlord {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
 		return landlordID;
-		
 	}
 	
 	//Gets landlord user name from database
@@ -124,7 +121,6 @@ public class Landlord {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		return landlordName;
 	}
 	
@@ -153,6 +149,40 @@ public class Landlord {
 		}
 		
 		return landlordPhone;
+	}
+	
+	//inserts number of apartments a landlord has
+	public void updateNumofApartments() {
+		int landlordID = getLandlordIdFromDB();
+		int numOfApart = 0;
+		
+		Connection conn = null;
+		Statement countApartStmt = null;
+		Statement updateNumofApartStmt = null;
+		
+		//SQL command that counts how many apartment a landlord has
+		String countApartSQL = "SELECT COUNT(apartment_name) FROM apartments WHERE landlord_ID = " + landlordID;
+		
+		try {
+			//Connection to database
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			
+			//Storing data from database into numOfApart string variable
+			countApartStmt = conn.createStatement();
+			ResultSet countApartRS = countApartStmt.executeQuery(countApartSQL);
+			while(countApartRS.next()) {
+				numOfApart = countApartRS.getInt(1);
+			}
+			//SQL command that updates how many apartment a landlord has
+			String updateNumofApartSQL = "UPDATE landlords SET num_of_apartments = " + numOfApart + " WHERE landlord_ID = " + landlordID;
+			
+			//Executing update SQL query
+			updateNumofApartStmt = conn.createStatement();
+			updateNumofApartStmt.execute(updateNumofApartSQL);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	//Checks if landlord user is in the database
@@ -194,12 +224,5 @@ public class Landlord {
 		}
 		
 		return true;
-	}
-	
-	public static void main (String[] args) {
-		
-		
-		
-		
 	}
 }

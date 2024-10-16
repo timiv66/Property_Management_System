@@ -135,6 +135,9 @@ public class Property_FX extends Application{
 							String phone = landlord.getLandlordPhoneFromDB();
 							landlord.setPhone(phone);
 							
+							//Updating the number of apartments a landlord has
+							landlord.updateNumofApartments();
+							
 							//Takes landlord user to landlord home page
 							t.setRoot(landlordUI(t));
 						}
@@ -484,6 +487,9 @@ public class Property_FX extends Application{
 				//Adding apartment to DB
 				int landlordId = landlord.getLandlordIdFromDB();
 				apartment.insertApartToDB(inputedApartName, inputedLocation, inputedMaxAmtOfTenants, inputedApartType, inputedStars, landlordId);
+				//Updating number of apartments a landlord has
+				landlord.updateNumofApartments();
+				//Takes landlord user to landlord home page
 				t.setRoot(landlordUI(t));
 			}
 		});
