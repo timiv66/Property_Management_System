@@ -12,7 +12,7 @@ public class Landlord {
 	final String DB_USER = "root";  // Use your MySQL username
 	final String DB_PASSWORD = "Tobi4timi$";  // Use your MySQL password
 	
-	private String landlordId, name, email,phone, password;
+	private String landlordId, name, email, phone, password;
 	private int numOfTenants;
 	
 	
@@ -94,11 +94,112 @@ public class Landlord {
 				landlordID = landlordIdRS.getInt(1);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		return landlordID;
+		
+	}
+	
+	//Gets landlord user name from database
+	public String getLandlordNameFromDB() {
+		int landlordID = getLandlordIdFromDB();
+		String landlordName = null;
+		
+		Connection conn = null;
+		Statement landlordNameStmt = null;
+		
+		String landlordNameSQL = "SELECT full_name FROM landlords WHERE landlord_ID = " + landlordID;
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			
+			landlordNameStmt = conn.createStatement();
+			ResultSet landlordNameRS = landlordNameStmt.executeQuery(landlordNameSQL);
+			
+			while(landlordNameRS.next()) {
+				landlordName = landlordNameRS.getString(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return landlordName;
+	}
+	
+	//Gets landlords phone from database
+	public String getLandlordPhoneFromDB() {
+		int landlordID = getLandlordIdFromDB();
+		String landlordPhone = null;
+		
+		Connection conn = null;
+		Statement landlordPhoneStmt = null;
+		
+		String landlordPhoneSQL = "SELECT phone FROM landlords WHERE landlord_ID = " + landlordID;
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			
+			landlordPhoneStmt = conn.createStatement();
+			ResultSet landlordPhoneRS = landlordPhoneStmt.executeQuery(landlordPhoneSQL);
+			
+			while(landlordPhoneRS.next()) {
+				landlordPhone = landlordPhoneRS.getString(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return landlordPhone;
+	}
+	
+	//Checks if landlord user is in the database
+	public boolean authenticateLandlordUser(String inputedEmail, String inputedPassword) {
+		String dbEmail = null;
+		String dbPassword = null;
+	
+		Connection conn = null;
+		Statement emailStmt = null;
+		Statement passwordStmt = null;
+		
+		String emailSQL = "SELECT email FROM landlords WHERE email = '" + inputedEmail + "' AND passwrd = '" + inputedPassword + "'";
+		String passwordSQL = "SELECT passwrd FROM landlords WHERE email = '" + inputedEmail + "' AND passwrd = '" + inputedPassword + "'";
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			
+			emailStmt = conn.createStatement();
+			passwordStmt = conn.createStatement();
+			
+			ResultSet emailRS = emailStmt.executeQuery(emailSQL);
+			ResultSet passwordRS = passwordStmt.executeQuery(passwordSQL);
+			
+			while(emailRS.next() && passwordRS.next()) {
+				dbEmail = emailRS.getString(1);
+				dbPassword = passwordRS.getString(1);
+			}
+			
+			if(dbEmail.equals(null) || dbPassword.equals(null)) {
+				return false;
+			}else if(!dbEmail.contentEquals(inputedEmail) || !dbPassword.contentEquals(inputedPassword)) {
+				return false;
+			}else if(dbEmail.contentEquals(inputedEmail) && dbPassword.contentEquals(inputedPassword)) {
+				return true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return true;
+	}
+	
+	public static void main (String[] args) {
+		
+		
+		
 		
 	}
 }

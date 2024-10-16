@@ -18,6 +18,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Property_FX extends Application{
@@ -59,6 +60,13 @@ public class Property_FX extends Application{
 		line.setStroke(Color.RED);
 		line.setStrokeWidth(5);
 		
+		Text errorMsg = new Text();
+		errorMsg.setFill(Color.RED);
+		errorMsg.setX(60);
+		errorMsg.setY(230);
+		errorMsg.setVisible(false);
+		
+		
 		Label loginLbl = new Label("Login");
 		loginLbl.setTranslateY(40);
 		loginLbl.setTranslateX(170);
@@ -88,25 +96,70 @@ public class Property_FX extends Application{
 		//User choosing if they are a tenant or a landlord
 		ToggleGroup group = new ToggleGroup();
 
-		RadioButton tenantBtn = new RadioButton("Tenant");
-		tenantBtn.setToggleGroup(group);
-		tenantBtn.setTranslateX(120);
-		tenantBtn.setTranslateY(150);
+		RadioButton tenantRBtn = new RadioButton("Tenant");
+		tenantRBtn.setToggleGroup(group);
+		tenantRBtn.setTranslateX(120);
+		tenantRBtn.setTranslateY(150);
 				
-		RadioButton landlordBtn = new RadioButton("Landlord");
-		landlordBtn.setToggleGroup(group);
-		landlordBtn.setTranslateX(210);
-		landlordBtn.setTranslateY(150);
+		RadioButton landlordRBtn = new RadioButton("Landlord");
+		landlordRBtn.setToggleGroup(group);
+		landlordRBtn.setTranslateX(210);
+		landlordRBtn.setTranslateY(150);
 		
 		//Login button
 		Button loginBtn = new Button("Login");
 		loginBtn.setTranslateX(170);
 		loginBtn.setTranslateY(180);
 		
+		loginBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				String inputedEmail = emailTxtF.getText();
+				String inputedPassword = passTxtF.getText();
+				
+				try {
+					//When a tenant logs in
+					if(tenantRBtn.isSelected()) {
+						
+					}
+					//When a landlord logs in
+					else if(landlordRBtn.isSelected()) {
+						if(landlord.authenticateLandlordUser(inputedEmail, inputedPassword) == true) {
+							//Setting landlord object values to inputed information
+							landlord.setEmail(inputedEmail);
+							landlord.setPassword(inputedPassword);
+							
+							String name = landlord.getLandlordNameFromDB();
+							landlord.setName(name);
+							
+							String phone = landlord.getLandlordPhoneFromDB();
+							landlord.setPhone(phone);
+							
+							//Takes landlord user to landlord home page
+							t.setRoot(landlordUI(t));
+						}
+						else if(landlord.authenticateLandlordUser(inputedEmail, inputedPassword) == false){
+							errorMsg.setText("Incorrect email or password. Please try again");
+							errorMsg.setVisible(true);
+						}
+					}
+					//What happens when neither button is selected
+					else if(!landlordRBtn.isSelected() && !landlordRBtn.isSelected()) {
+						errorMsg.setText("Please select tenant or landlord button");
+						errorMsg.setVisible(true);
+					}
+				}catch (Exception e) {
+					errorMsg.setText("Login Failed. Please check login information and try again");
+					errorMsg.setVisible(true);
+					e.printStackTrace();
+				}
+			}
+		});
+		
 		//New Tenant button
 		Button newTenantBtn = new Button("New Tenant");
 		newTenantBtn.setTranslateX(100);
-		newTenantBtn.setTranslateY(235);
+		newTenantBtn.setTranslateY(250);
 		
 		newTenantBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -118,7 +171,7 @@ public class Property_FX extends Application{
 		//New Landlord button
 		Button newLandlordBtn = new Button("New Landlord");
 		newLandlordBtn.setTranslateX(210);
-		newLandlordBtn.setTranslateY(235);
+		newLandlordBtn.setTranslateY(250);
 		
 		newLandlordBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -133,7 +186,7 @@ public class Property_FX extends Application{
 		Background background = new Background(background_fill);
 		loginPane.setBackground(background);
 		
-		loginPane.getChildren().addAll(title,line,loginLbl,emailLbl,emailTxtF,passLbl,passTxtF,tenantBtn,landlordBtn,loginBtn,newTenantBtn,newLandlordBtn);
+		loginPane.getChildren().addAll(title,line,errorMsg,loginLbl,emailLbl,emailTxtF,passLbl,passTxtF,tenantRBtn,landlordRBtn,loginBtn,newTenantBtn,newLandlordBtn);
 		return loginPane;
 	}
 	
@@ -309,6 +362,7 @@ public class Property_FX extends Application{
 						&& inputedPassword.matches("[\\w]{7,}"+"[!@#$%&*]{1}") && inputedPhone.matches("^(\\+?\\d{1,3}[-.\\s]?)?(\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4})$")) {
 					landlord.insertLandlordToDB(inputedName, inputedEmail, inputedPassword, inputedPhone);
 					
+					//Setting landlord object values to inputed information
 					landlord.setName(inputedName);
 					landlord.setEmail(inputedEmail);
 					landlord.setPassword(inputedPassword);
@@ -430,6 +484,7 @@ public class Property_FX extends Application{
 				//Adding apartment to DB
 				int landlordId = landlord.getLandlordIdFromDB();
 				apartment.insertApartToDB(inputedApartName, inputedLocation, inputedMaxAmtOfTenants, inputedApartType, inputedStars, landlordId);
+				t.setRoot(landlordUI(t));
 			}
 		});
 		
@@ -439,6 +494,49 @@ public class Property_FX extends Application{
 		return landlordRegApartPane;
 	}
 	
-	
+	public Pane landlordUI(Scene t) {
+		String name = landlord.getLandlordNameFromDB();
+		
+		Label titleLbl = new Label("Home Page for: " + name);
+		titleLbl.setFont(titleFont);
+		titleLbl.setTranslateX(3);
+		
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);
+		
+		Button searchBtn = new Button("Search");
+		searchBtn.setTranslateX(150);
+		searchBtn.setTranslateY(40);
+		searchBtn.setPrefHeight(50);
+		searchBtn.setPrefWidth(100);
+		searchBtn.setFont(btnFont);
+		
+		//Existing landlords can add apartments to database
+		Button addApartBtn = new Button("Add Apartment");
+		addApartBtn.setTranslateX(115);
+		addApartBtn.setTranslateY(100);
+		addApartBtn.setPrefHeight(50);
+		addApartBtn.setPrefWidth(170);
+		addApartBtn.setFont(btnFont);
+		
+		addApartBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(landlordRegApart(t));
+			}
+		});
+		
+		
+		Pane landlordUiPane = new Pane();
+		
+		landlordUiPane.getChildren().addAll(titleLbl,line,searchBtn,addApartBtn);
+		return landlordUiPane;
+	}
 
 }
