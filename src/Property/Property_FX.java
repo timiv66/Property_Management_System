@@ -45,7 +45,7 @@ public class Property_FX extends Application{
 		// TODO Auto-generated method stub
 		Pane p1 = new Pane();
 		Scene t = new Scene(p1,400,280);
-		t.setRoot(tenantMakeLease(t));
+		t.setRoot(login(t));
 		mainStage.setScene(t);
 		mainStage.show();
 		mainStage.setTitle("Property Management");
