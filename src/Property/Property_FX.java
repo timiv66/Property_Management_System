@@ -1,5 +1,10 @@
 package Property;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -40,7 +45,7 @@ public class Property_FX extends Application{
 		// TODO Auto-generated method stub
 		Pane p1 = new Pane();
 		Scene t = new Scene(p1,400,280);
-		t.setRoot(login(t));
+		t.setRoot(tenantMakeLease(t));
 		mainStage.setScene(t);
 		mainStage.show();
 		mainStage.setTitle("Property Management");
@@ -66,7 +71,6 @@ public class Property_FX extends Application{
 		errorMsg.setY(230);
 		errorMsg.setVisible(false);
 		
-		
 		Label loginLbl = new Label("Login");
 		loginLbl.setTranslateY(40);
 		loginLbl.setTranslateX(170);
@@ -91,7 +95,6 @@ public class Property_FX extends Application{
 		TextField passTxtF = new TextField();
 		passTxtF.setTranslateX(195);
 		passTxtF.setTranslateY(115);
-		
 		
 		//User choosing if they are a tenant or a landlord
 		ToggleGroup group = new ToggleGroup();
@@ -119,13 +122,30 @@ public class Property_FX extends Application{
 				
 				try {
 					//When a tenant logs in
-					if(tenantRBtn.isSelected()) {
-						
+					if(tenantRBtn.isSelected()) { 
+						if(tenant.authenticateTenantUser(inputedEmail, inputedPassword) == true) { //When login information for tenant is correct
+							//Adding existing tenant info to tenant object
+							tenant.setEmail(inputedEmail);
+							tenant.setPassword(inputedPassword);
+							
+							String name = tenant.getTenantNameFromDB();
+							tenant.setName(name);
+							
+							String phone = tenant.getTenantPhoneFromDB();
+							tenant.setPhone(phone);
+							
+							//Takes tenant user to tenant home page
+							t.setRoot(tenantUI(t));
+							
+						}else if(tenant.authenticateTenantUser(inputedEmail, inputedPassword) == false){ //When login information for tenant is incorrect
+							errorMsg.setText("Incorrect email or password. Please try again");
+							errorMsg.setVisible(true);
+						}
 					}
 					//When a landlord logs in
 					else if(landlordRBtn.isSelected()) {
-						if(landlord.authenticateLandlordUser(inputedEmail, inputedPassword) == true) {
-							//Setting landlord object values to inputed information
+						if(landlord.authenticateLandlordUser(inputedEmail, inputedPassword) == true) { //When login information for landlord is correct
+							//Adding existing landlord info to tenant object
 							landlord.setEmail(inputedEmail);
 							landlord.setPassword(inputedPassword);
 							
@@ -141,7 +161,7 @@ public class Property_FX extends Application{
 							//Takes landlord user to landlord home page
 							t.setRoot(landlordUI(t));
 						}
-						else if(landlord.authenticateLandlordUser(inputedEmail, inputedPassword) == false){
+						else if(landlord.authenticateLandlordUser(inputedEmail, inputedPassword) == false){//When login information for landlord is incorrect
 							errorMsg.setText("Incorrect email or password. Please try again");
 							errorMsg.setVisible(true);
 						}
@@ -167,7 +187,7 @@ public class Property_FX extends Application{
 		newTenantBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				t.setRoot(newTenantAcc(t));
+				t.setRoot(newTenantAcc(t));//Takes user to tenant account creation page
 			}
 		});
 		
@@ -179,7 +199,7 @@ public class Property_FX extends Application{
 		newLandlordBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				t.setRoot(newLandlordAcc(t));
+				t.setRoot(newLandlordAcc(t));//Takes user to landlord account creation page
 			}
 		});
 		
@@ -210,6 +230,7 @@ public class Property_FX extends Application{
 		line.setStroke(Color.RED);
 		line.setStrokeWidth(5);
 		
+		//Name field
 		Label nameLbl = new Label("Name: ");
 		nameLbl.setTranslateX(3);
 		nameLbl.setTranslateY(38);
@@ -219,6 +240,7 @@ public class Property_FX extends Application{
 		nameTxtF.setTranslateX(65);
 		nameTxtF.setTranslateY(38);
 		
+		//Email field
 		Label emailLbl = new Label("Email: ");
 		emailLbl.setTranslateX(3);
 		emailLbl.setTranslateY(71);
@@ -228,6 +250,7 @@ public class Property_FX extends Application{
 		emailTxtF.setTranslateX(70);
 		emailTxtF.setTranslateY(71);
 		
+		//Password field
 		Label passwordLbl = new Label("Password:");
 		passwordLbl.setTranslateX(3);
 		passwordLbl.setTranslateY(104);
@@ -237,6 +260,7 @@ public class Property_FX extends Application{
 		passwordTxtF.setTranslateX(100);
 		passwordTxtF.setTranslateY(104);
 		
+		//Phone field
 		Label phoneLbl = new Label("Phone:");
 		phoneLbl.setTranslateX(3);
 		phoneLbl.setTranslateY(137);
@@ -263,7 +287,15 @@ public class Property_FX extends Application{
 				//Checking in user inputed information is written correctly
 				if(inputedName.matches("^[A-Z][a-z]+ [A-Z][a-z]+$") && inputedEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
 						&& inputedPassword.matches("[\\w]{7,}"+"[!@#$%&*]{1}") && inputedPhone.matches("^(\\+?\\d{1,3}[-.\\s]?)?(\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4})$")) {
-					tenant.insertTenantToDB(inputedName, inputedEmail, inputedPassword, inputedPhone);
+					tenant.insertTenantToDB(inputedName, inputedEmail, inputedPassword, inputedPhone); //Adding new tenant to database
+					
+					//Adding new tenant info to tenant object
+					tenant.setName(inputedName);
+					tenant.setEmail(inputedEmail);
+					tenant.setPassword(inputedPassword);
+					tenant.setPhone(inputedPhone);
+					t.setRoot(tenantMakeLease(t));
+					
 					
 					
 				//Display error message if format is wrong	
@@ -273,6 +305,7 @@ public class Property_FX extends Application{
 			}
 		});
 		
+		//Back button
 		Button backBtn = new Button("Back");
 		backBtn.setTranslateX(3);
 		backBtn.setTranslateY(250);
@@ -280,7 +313,7 @@ public class Property_FX extends Application{
 		backBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				t.setRoot(login(t));
+				t.setRoot(login(t)); //Takes user back to login page
 			}
 		});
 		
@@ -311,6 +344,9 @@ public class Property_FX extends Application{
 		line.setStroke(Color.RED);
 		line.setStrokeWidth(5);
 		
+		Text errorMsg = new Text("");
+		
+		//Name field
 		Label nameLbl = new Label("Name: ");
 		nameLbl.setTranslateX(3);
 		nameLbl.setTranslateY(38);
@@ -320,6 +356,7 @@ public class Property_FX extends Application{
 		nameTxtF.setTranslateX(65);
 		nameTxtF.setTranslateY(38);
 		
+		//Email field
 		Label emailLbl = new Label("Email: ");
 		emailLbl.setTranslateX(3);
 		emailLbl.setTranslateY(71);
@@ -329,6 +366,7 @@ public class Property_FX extends Application{
 		emailTxtF.setTranslateX(70);
 		emailTxtF.setTranslateY(71);
 		
+		//Password field
 		Label passwordLbl = new Label("Password:");
 		passwordLbl.setTranslateX(3);
 		passwordLbl.setTranslateY(104);
@@ -338,6 +376,7 @@ public class Property_FX extends Application{
 		passwordTxtF.setTranslateX(100);
 		passwordTxtF.setTranslateY(104);
 		
+		//Phone field
 		Label phoneLbl = new Label("Phone:");
 		phoneLbl.setTranslateX(3);
 		phoneLbl.setTranslateY(137);
@@ -347,6 +386,7 @@ public class Property_FX extends Application{
 		phoneTxtF.setTranslateX(70);
 		phoneTxtF.setTranslateY(137);
 		
+		//Button that will create new landlord account
 		Button createLandlordAccBtn = new Button("Create Account");
 		createLandlordAccBtn.setTranslateX(90);
 		createLandlordAccBtn.setTranslateY(190);
@@ -363,7 +403,7 @@ public class Property_FX extends Application{
 				//Checking in user inputed information is written correctly
 				if(inputedName.matches("^[A-Z][a-z]+ [A-Z][a-z]+$") && inputedEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
 						&& inputedPassword.matches("[\\w]{7,}"+"[!@#$%&*]{1}") && inputedPhone.matches("^(\\+?\\d{1,3}[-.\\s]?)?(\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4})$")) {
-					landlord.insertLandlordToDB(inputedName, inputedEmail, inputedPassword, inputedPhone);
+					landlord.insertLandlordToDB(inputedName, inputedEmail, inputedPassword, inputedPhone); //Adds new landlord user to database
 					
 					//Setting landlord object values to inputed information
 					landlord.setName(inputedName);
@@ -374,11 +414,12 @@ public class Property_FX extends Application{
 					t.setRoot(landlordRegApart(t));
 				//Display error message if format is wrong	
 				}else {
-					
+					errorMsg.setVisible(true);
 				}
 			}
 		});
 		
+		//Back button
 		Button backBtn = new Button("Back");
 		backBtn.setTranslateX(3);
 		backBtn.setTranslateY(250);
@@ -386,7 +427,7 @@ public class Property_FX extends Application{
 		backBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				t.setRoot(login(t));
+				t.setRoot(login(t));//Takes user back to login page 
 			}
 		});
 		
@@ -415,6 +456,7 @@ public class Property_FX extends Application{
 		line.setStroke(Color.RED);
 		line.setStrokeWidth(5);
 		
+		//Apartment name field
 		Label apartNameLbl = new Label("Apartment Name: ");
 		apartNameLbl.setTranslateX(3);
 		apartNameLbl.setTranslateY(38);
@@ -424,6 +466,7 @@ public class Property_FX extends Application{
 		apartNameTxtF.setTranslateX(170);
 		apartNameTxtF.setTranslateY(38);
 		
+		//Apartment location field
 		Label locationLbl = new Label("Location: ");
 		locationLbl.setTranslateX(3);
 		locationLbl.setTranslateY(71);
@@ -433,6 +476,7 @@ public class Property_FX extends Application{
 		locationTxtF.setTranslateX(90);
 		locationTxtF.setTranslateY(71);
 		
+		//Max amounts of tenants field
 		Label maxAmtLbl = new Label("Max amount of tenants:");
 		maxAmtLbl.setTranslateX(3);
 		maxAmtLbl.setTranslateY(104);
@@ -442,6 +486,7 @@ public class Property_FX extends Application{
 		maxAmtTxtF.setTranslateX(215);
 		maxAmtTxtF.setTranslateY(104);
 		
+		//Apartment type choice box
 		Label apartTypeLbl = new Label("Apartment Type:");
 		apartTypeLbl.setTranslateX(3);
 		apartTypeLbl.setTranslateY(137);
@@ -456,6 +501,7 @@ public class Property_FX extends Application{
 		apartTypeCB.setTranslateX(160);
 		apartTypeCB.setTranslateY(137);
 		
+		//Number of Stars choice box
 		Label starsLbl = new Label("Stars:");
 		starsLbl.setTranslateX(3);
 		starsLbl.setTranslateY(170);
@@ -470,6 +516,7 @@ public class Property_FX extends Application{
 		starCB.setTranslateX(60);
 		starCB.setTranslateY(170);
 		
+		//Button that will add new apartments to database
 		Button regApartBtn = new Button("Register Apartment");
 		regApartBtn.setTranslateX(130);
 		regApartBtn.setTranslateY(220);
@@ -487,10 +534,10 @@ public class Property_FX extends Application{
 				//Adding apartment to DB
 				int landlordId = landlord.getLandlordIdFromDB();
 				apartment.insertApartToDB(inputedApartName, inputedLocation, inputedMaxAmtOfTenants, inputedApartType, inputedStars, landlordId);
-				//Updating number of apartments a landlord has
-				landlord.updateNumofApartments();
-				//Takes landlord user to landlord home page
-				t.setRoot(landlordUI(t));
+				
+				landlord.updateNumofApartments(); //Updating number of apartments a landlord has
+				
+				t.setRoot(landlordUI(t)); //Takes landlord user to landlord home page
 			}
 		});
 		
@@ -500,6 +547,48 @@ public class Property_FX extends Application{
 		return landlordRegApartPane;
 	}
 	
+	public Pane tenantMakeLease(Scene t) {
+		Label titleLbl = new Label("Create New Lease");
+		titleLbl.setFont(titleFont);
+		titleLbl.setTranslateX(3);
+		
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);
+		
+		Label apartComplexLbl = new Label("Choose Apartment:");
+		apartComplexLbl.setTranslateX(3);
+		apartComplexLbl.setTranslateY(38);
+		apartComplexLbl.setFont(btnFont);
+		
+		//Gets all apartment names from database
+		List<String> apartNameList = new ArrayList<String>();
+		apartNameList = apartment.getAllApartmentNames();
+		
+		//Choice box for apartment complexes
+		ChoiceBox<String> apartNameCB = new ChoiceBox<String>();
+		apartNameCB.setTranslateX(177);
+		apartNameCB.setTranslateY(38);
+		
+		//Adds all apartment names from array list to choice box
+		int i = 0;
+		while(i < apartNameList.size()) {
+			apartNameCB.getItems().add(apartNameList.get(i));
+			i++;
+		}
+		
+		Pane tenantMakeLeasePane = new Pane();
+		tenantMakeLeasePane.getChildren().addAll(titleLbl,line,apartComplexLbl,apartNameCB);
+		
+		return tenantMakeLeasePane;
+	}
+	
+	//Home page for landlord users
 	public Pane landlordUI(Scene t) {
 		String name = landlord.getLandlordNameFromDB();
 		
@@ -516,6 +605,7 @@ public class Property_FX extends Application{
 		line.setStroke(Color.RED);
 		line.setStrokeWidth(5);
 		
+		//Search database
 		Button searchBtn = new Button("Search");
 		searchBtn.setTranslateX(150);
 		searchBtn.setTranslateY(40);
@@ -534,7 +624,7 @@ public class Property_FX extends Application{
 		addApartBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				t.setRoot(landlordRegApart(t));
+				t.setRoot(landlordRegApart(t)); //Takes landlord user to register apartment page
 			}
 		});
 		
@@ -543,6 +633,16 @@ public class Property_FX extends Application{
 		
 		landlordUiPane.getChildren().addAll(titleLbl,line,searchBtn,addApartBtn);
 		return landlordUiPane;
+	}
+	
+	//Home page for tenant users
+	public Pane tenantUI(Scene t) {
+		
+		
+		Pane tenantUiPane = new Pane();
+		
+		tenantUiPane.getChildren().addAll();
+		return tenantUiPane;
 	}
 
 }
