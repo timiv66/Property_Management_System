@@ -1,5 +1,7 @@
 package Property;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +14,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
@@ -31,6 +34,7 @@ public class Property_FX extends Application{
 	Tenant tenant = new Tenant();
 	Landlord landlord = new Landlord();
 	Apartment apartment = new Apartment();
+	Lease lease = new Lease();
 	
 	Font titleFont = new Font("Stencil",25);
 	Font btnFont = new Font("Elephant",18);
@@ -294,7 +298,7 @@ public class Property_FX extends Application{
 					tenant.setEmail(inputedEmail);
 					tenant.setPassword(inputedPassword);
 					tenant.setPhone(inputedPhone);
-					t.setRoot(tenantMakeLease(t));
+					t.setRoot(tenantMakeLease(t)); //Takes new tenant user to make lease page
 					
 					
 					
@@ -582,8 +586,96 @@ public class Property_FX extends Application{
 			i++;
 		}
 		
+		//Lease length field
+		Label leaseLengthLbl = new Label("Lease Length: ");
+		leaseLengthLbl.setTranslateX(3);
+		leaseLengthLbl.setTranslateY(71);
+		leaseLengthLbl.setFont(btnFont);
+				
+		ChoiceBox<Integer> leaseLengthCB = new ChoiceBox<Integer>();
+		leaseLengthCB.getItems().add(1);
+		leaseLengthCB.getItems().add(2);
+		leaseLengthCB.getItems().add(3);
+		leaseLengthCB.getItems().add(4);
+		leaseLengthCB.getItems().add(5);
+		leaseLengthCB.setTranslateX(133);
+		leaseLengthCB.setTranslateY(71);
+		
+		//Rent Field
+		Label rentLbl = new Label("Rent:");
+		rentLbl.setTranslateX(3);
+		rentLbl.setTranslateY(104);
+		rentLbl.setFont(btnFont);
+		
+		ChoiceBox<Integer> rentCB = new ChoiceBox<Integer>();
+		rentCB.setTranslateX(55);
+		rentCB.setTranslateY(104);
+		
+		//Button will get rent amount based on apartment_name
+		Button rentBtn = new Button("Get Rent");
+		rentBtn.setTranslateX(125);
+		rentBtn.setTranslateY(104);
+		
+		rentBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				apartment.setName(apartNameCB.getValue());
+				int rent = lease.getRentFromDB(apartment.getName());
+				rentCB.getItems().clear();
+				rentCB.getItems().add(rent);
+			}
+		});
+		
+		//Start date field
+		Label dateLbl = new Label("Start Date:");
+		dateLbl.setTranslateX(3);
+		dateLbl.setTranslateY(137);
+		dateLbl.setFont(btnFont);
+		
+		DatePicker dateTxtF = new DatePicker();
+		dateTxtF.setTranslateX(107);
+		dateTxtF.setTranslateY(137);
+		
+		//Error message
+		Text errorMsg = new Text("Please press the get rent button");
+		errorMsg.setX(100);
+		errorMsg.setY(190);
+		errorMsg.setVisible(false);
+		
+		//Button will add new lease to database
+		Button createLeaseBtn = new Button("Create Lease");
+		createLeaseBtn.setTranslateX(150);
+		createLeaseBtn.setTranslateY(200);
+		
+		createLeaseBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				if(rentCB.getValue() == 0 || rentCB.getValue() == null) { //If rent value is null it will display error message
+					errorMsg.setVisible(true);
+				}else {
+					String apartmentName = apartNameCB.getValue();//Storing apartment name choice in string variable and stores it in apartment object
+					apartment.setName(apartmentName);
+					
+					int leaseLength = leaseLengthCB.getValue();//Storing lease length choice in integer variable
+					int rent = rentCB.getValue();
+					
+					LocalDate starDateVal = dateTxtF.getValue();//Storing start date choice in String variable
+					String startDate = String.valueOf(starDateVal);
+					
+					LocalDate endDateVal = dateTxtF.getValue().plusYears(leaseLength);//Storing end date choice in String variable
+					String endDate = String.valueOf(endDateVal);
+					
+					lease.createLease(tenant, apartment, apartmentName, leaseLength, rent, startDate, endDate);//Adds new lease to database
+					
+					tenant.updateLandlordIdForTenant(lease, tenant);//Updates tenants's landlord
+					
+					t.setRoot(tenantUI(t));//Takes tenant user to tenant home page
+				}
+			}
+		});
+		
 		Pane tenantMakeLeasePane = new Pane();
-		tenantMakeLeasePane.getChildren().addAll(titleLbl,line,apartComplexLbl,apartNameCB);
+		tenantMakeLeasePane.getChildren().addAll(titleLbl,line,apartComplexLbl,apartNameCB,leaseLengthLbl,leaseLengthCB,rentLbl,rentCB,rentBtn,dateLbl,dateTxtF,createLeaseBtn,errorMsg);
 		
 		return tenantMakeLeasePane;
 	}

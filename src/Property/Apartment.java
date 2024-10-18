@@ -1,9 +1,14 @@
 package Property;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Apartment {
 	final String DB_URL = "jdbc:mysql://localhost:3306/propertysystem";
@@ -59,6 +64,8 @@ public class Apartment {
 		this.maxAmtOfTenants = maxAmtOfTenants;
 	}
 	
+	
+	//Adds new apartment to database
 	public void insertApartToDB(String apartName, String location, int maxAmtOfTenants, String apartType, int stars, int landlordId) {
 		Connection conn = null;
 		PreparedStatement apartmentStmt = null;
@@ -79,6 +86,67 @@ public class Apartment {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	//Get all apartment names
+	public List<String> getAllApartmentNames() {
+		List<String> list = new ArrayList<String>();
+		
+		Connection conn = null;
+		Statement apartmentNamesStmt = null;
+		
+		String apartNameSQL = "SELECT apartment_name FROM apartments";
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			apartmentNamesStmt = conn.createStatement();
+			ResultSet apartmentNameRS = apartmentNamesStmt.executeQuery(apartNameSQL);
+			
+			while(apartmentNameRS.next()) {
+				String a = apartmentNameRS.getString("apartment_name");
+				list.add(a);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
+		
+	}
+	
+	//Gets landlord_id from apartment table
+	public int getLandlordIdFromApartments(Apartment apartment) {
+		int landlordID = 0;
+			
+		Connection conn = null;
+		Statement landlordIdStmt = null;
+			
+		String landlordIdSQL = "SELECT landlord_ID FROM apartments WHERE apartment_name = '" + apartment.getName() + "'" ;
+			
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			landlordIdStmt = conn.createStatement();
+				
+			ResultSet landlordIdRS = landlordIdStmt.executeQuery(landlordIdSQL);
+				
+			while(landlordIdRS.next()) {
+					landlordID = landlordIdRS.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return landlordID;
+		}
+	
+	public static void main(String[] args) {
+		Apartment apartment = new Apartment();
+		List<String> list = apartment.getAllApartmentNames();
+		
+		
+		for (String a : list) {
+		    System.out.println(a);
 		}
 	}
 	
