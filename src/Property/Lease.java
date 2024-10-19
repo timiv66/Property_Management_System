@@ -17,6 +17,8 @@ public class Lease {
 	
 	String leaseID, tenantID, landlordID, apartment_name, date;
 	int length;
+	Tenant tenant;
+	Lease lease;
 	
 	public String getLeaseID() {
 		return leaseID;
@@ -54,6 +56,19 @@ public class Lease {
 	public void setLength(int length) {
 		this.length = length;
 	}
+	public Tenant getTenant() {
+		return tenant;
+	}
+	public void setTenant(Tenant tenant) {
+		this.tenant = tenant;
+	}
+	public Lease getLease() {
+		return lease;
+	}
+	public void setLease(Lease lease) {
+		this.lease = lease;
+	}
+	
 	
 	//Gets rent from joined table in database
 	public int getRentFromDB(String apartName) {

@@ -138,6 +138,8 @@ public class Property_FX extends Application{
 							String phone = tenant.getTenantPhoneFromDB();
 							tenant.setPhone(phone);
 							
+							tenant.updateNumOfTenantsForLandandlord(lease, tenant);//Updates amount of tenants a landlord has when a tenant user logs in
+							
 							//Takes tenant user to tenant home page
 							t.setRoot(tenantUI(t));
 							
@@ -149,7 +151,7 @@ public class Property_FX extends Application{
 					//When a landlord logs in
 					else if(landlordRBtn.isSelected()) {
 						if(landlord.authenticateLandlordUser(inputedEmail, inputedPassword) == true) { //When login information for landlord is correct
-							//Adding existing landlord info to tenant object
+							//Adding existing landlord info to landlord object
 							landlord.setEmail(inputedEmail);
 							landlord.setPassword(inputedPassword);
 							
@@ -159,8 +161,9 @@ public class Property_FX extends Application{
 							String phone = landlord.getLandlordPhoneFromDB();
 							landlord.setPhone(phone);
 							
-							//Updating the number of apartments a landlord has
+							//Updating the number of apartments and tenants a landlord has
 							landlord.updateNumofApartments();
+							landlord.updateNumOfTenants();
 							
 							//Takes landlord user to landlord home page
 							t.setRoot(landlordUI(t));
@@ -219,7 +222,6 @@ public class Property_FX extends Application{
 	
 	//Where new tenants can create a new tenant account
 	public Pane newTenantAcc (Scene t) {
-		t.getWindow().setWidth(290);
 		
 		Label titleLbl = new Label("New Tenant Account");
 		titleLbl.setFont(titleFont);
@@ -530,6 +532,8 @@ public class Property_FX extends Application{
 			public void handle(ActionEvent arg0) {
 				//Inputed apartment information by user
 				String inputedApartName = apartNameTxtF.getText();
+				
+				
 				String inputedLocation = locationTxtF.getText();
 				int inputedMaxAmtOfTenants = Integer.parseInt(maxAmtTxtF.getText());
 				String inputedApartType = apartTypeCB.getValue();
@@ -538,6 +542,8 @@ public class Property_FX extends Application{
 				//Adding apartment to DB
 				int landlordId = landlord.getLandlordIdFromDB();
 				apartment.insertApartToDB(inputedApartName, inputedLocation, inputedMaxAmtOfTenants, inputedApartType, inputedStars, landlordId);
+				
+				apartment.setName(inputedApartName);
 				
 				landlord.updateNumofApartments(); //Updating number of apartments a landlord has
 				
@@ -668,6 +674,9 @@ public class Property_FX extends Application{
 					lease.createLease(tenant, apartment, apartmentName, leaseLength, rent, startDate, endDate);//Adds new lease to database
 					
 					tenant.updateLandlordIdForTenant(lease, tenant);//Updates tenants's landlord
+					tenant.updateNumOfTenantsForLandandlord(lease, tenant);//Updates amount of tenants a landlord has
+					
+					apartment.updateNumOfTenantsForApartment();//Update numbers of tenants for apartments
 					
 					t.setRoot(tenantUI(t));//Takes tenant user to tenant home page
 				}
@@ -720,20 +729,57 @@ public class Property_FX extends Application{
 			}
 		});
 		
+		Button logOutBtn = new Button("Logout");
+		logOutBtn.setTranslateX(3);
+		logOutBtn.setTranslateY(250);
+		
+		logOutBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				t.setRoot(login(t));
+			}
+		});
+		
 		
 		Pane landlordUiPane = new Pane();
 		
-		landlordUiPane.getChildren().addAll(titleLbl,line,searchBtn,addApartBtn);
+		landlordUiPane.getChildren().addAll(titleLbl,line,searchBtn,addApartBtn,logOutBtn);
 		return landlordUiPane;
 	}
 	
 	//Home page for tenant users
 	public Pane tenantUI(Scene t) {
+		String name = tenant.getTenantNameFromDB();
 		
+		Label titleLbl = new Label("Tenant Home Page");
+		titleLbl.setFont(titleFont);
+		titleLbl.setTranslateX(3);
+		
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);
+		
+		Button logOutBtn = new Button("Logout");
+		logOutBtn.setTranslateX(3);
+		logOutBtn.setTranslateY(250);
+		
+		logOutBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				t.setRoot(login(t));
+			}
+		});
 		
 		Pane tenantUiPane = new Pane();
 		
-		tenantUiPane.getChildren().addAll();
+		tenantUiPane.getChildren().addAll(titleLbl,line,logOutBtn);
 		return tenantUiPane;
 	}
 

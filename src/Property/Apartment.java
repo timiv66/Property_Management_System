@@ -115,6 +115,28 @@ public class Apartment {
 		return list;
 		
 	}
+	public String getApartmentNameFromDB() {
+		String name = null;
+		
+		Connection conn = null;
+		Statement apartmentNamesStmt = null;
+		
+		String apartNameSQL = "SELECT apartment_name FROM apartments WHERE apartment_name = '" + getName() + "'";
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			apartmentNamesStmt = conn.createStatement();
+			ResultSet apartmentNameRS = apartmentNamesStmt.executeQuery(apartNameSQL);
+			
+			while(apartmentNameRS.next()) {
+				name = apartmentNameRS.getString("apartment_name");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return name;
+	}
 	
 	//Gets landlord_id from apartment table
 	public int getLandlordIdFromApartments(Apartment apartment) {
@@ -138,7 +160,34 @@ public class Apartment {
 			e.printStackTrace();
 		}
 		return landlordID;
+	}
+	
+	public void updateNumOfTenantsForApartment() {
+		String apartName = getApartmentNameFromDB();
+		int numOfTenants = 0;
+		
+		Connection conn = null;
+		Statement countNumOfTenantsStmt = null;
+		Statement updateNumOfTenantsStmt = null;
+		
+		String countNumOfTenantsSQL = "SELECT COUNT(tenant_ID) FROM leases WHERE apartment_name = '" + apartName + "'";
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			countNumOfTenantsStmt = conn.createStatement();
+			ResultSet countNumOfTenantsRS = countNumOfTenantsStmt.executeQuery(countNumOfTenantsSQL);
+			
+			while(countNumOfTenantsRS.next()) {
+				numOfTenants = countNumOfTenantsRS.getInt(1);
+			}
+			String updateNumOfTenantsSQL = "UPDATE apartments SET num_of_tenants = " + numOfTenants + " WHERE apartment_name = '" + apartName + "'";
+			updateNumOfTenantsStmt = conn.createStatement();
+			updateNumOfTenantsStmt.execute(updateNumOfTenantsSQL);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+	}
 	
 	public static void main(String[] args) {
 		Apartment apartment = new Apartment();

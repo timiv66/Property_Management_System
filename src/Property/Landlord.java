@@ -153,7 +153,7 @@ public class Landlord {
 	
 	//inserts number of apartments a landlord has
 	public void updateNumofApartments() {
-		int landlordID = getLandlordIdFromDB();
+		int landlordId = getLandlordIdFromDB();
 		int numOfApart = 0;
 		
 		Connection conn = null;
@@ -161,7 +161,7 @@ public class Landlord {
 		Statement updateNumofApartStmt = null;
 		
 		//SQL command that counts how many apartment a landlord has
-		String countApartSQL = "SELECT COUNT(apartment_name) FROM apartments WHERE landlord_ID = " + landlordID;
+		String countApartSQL = "SELECT COUNT(apartment_name) FROM apartments WHERE landlord_ID = " + landlordId;
 		
 		try {
 			//Connection to database
@@ -174,7 +174,7 @@ public class Landlord {
 				numOfApart = countApartRS.getInt(1);
 			}
 			//SQL command that updates how many apartment a landlord has
-			String updateNumofApartSQL = "UPDATE landlords SET num_of_apartments = " + numOfApart + " WHERE landlord_ID = " + landlordID;
+			String updateNumofApartSQL = "UPDATE landlords SET num_of_apartments = " + numOfApart + " WHERE landlord_ID = " + landlordId;
 			
 			//Executing update SQL query
 			updateNumofApartStmt = conn.createStatement();
@@ -183,6 +183,41 @@ public class Landlord {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	//Updates total number of tenants a landlord has
+	public void updateNumOfTenants() {
+		int landlordId = getLandlordIdFromDB();
+		int numOfTenants = 0;
+		
+		Connection conn = null;
+		Statement countTenantsStmt = null;
+		Statement updateNumofTenantsStmt = null;
+		
+		//SQL command that counts how many tenants a landlord has from joining the landlord and tenant table 
+		String countTenantSQL = "SELECT COUNT(tenant_ID) FROM tenants INNER JOIN landlords ON tenants.landlord_ID = landlords.landlord_ID WHERE landlords.landlord_ID = " + landlordId;
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			
+			//Storing data from database into numOfTenants string variable
+			countTenantsStmt = conn.createStatement();
+			ResultSet countTenantRS = countTenantsStmt.executeQuery(countTenantSQL);
+			while(countTenantRS.next()) {
+				numOfTenants = countTenantRS.getInt(1);
+			}
+			
+			//Updates landlord table by inserting numOfTenants variable into database
+			String updateNumofTenantsSQL = "UPDATE landlords SET num_of_tenants = " + numOfTenants + " WHERE landlord_ID = " + landlordId;
+			updateNumofTenantsStmt = conn.createStatement();
+			updateNumofTenantsStmt.execute(updateNumofTenantsSQL);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 	}
 	
 	//Checks if landlord user is in the database

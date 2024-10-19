@@ -172,6 +172,36 @@ public class Tenant {
 		}
 	}
 	
+	public void updateNumOfTenantsForLandandlord(Lease lease, Tenant tenant) {
+		int landlordId = lease.getLandlordIDFromLease(tenant);
+		int numOfTenants = 0;
+		
+		Connection conn = null;
+		Statement countNumOfTenansStmt = null;
+		Statement updateNumOfTenansStmt = null;
+		
+		String countSQL = "select count(tenant_ID) from leases where landlord_ID = " + landlordId;
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			
+			countNumOfTenansStmt = conn.createStatement();
+			ResultSet tenantCountRS = countNumOfTenansStmt.executeQuery(countSQL);
+			
+			while(tenantCountRS.next()) {
+					numOfTenants = tenantCountRS.getInt(1);
+			}
+			
+			String updateNumofTenantsSQL = "UPDATE landlords SET num_of_tenants = " + numOfTenants + " WHERE landlord_ID = " + landlordId;
+			updateNumOfTenansStmt = conn.createStatement();
+			updateNumOfTenansStmt.execute(updateNumofTenantsSQL);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	//Checks if tenant user is in database
 	public boolean authenticateTenantUser(String inputedEmail, String inputedPassword) {
 		String dbEmail = null;
