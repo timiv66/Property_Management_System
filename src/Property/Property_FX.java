@@ -220,120 +220,6 @@ public class Property_FX extends Application{
 		return loginPane;
 	}
 	
-	//Where new tenants can create a new tenant account
-	public Pane newTenantAcc (Scene t) {
-		
-		Label titleLbl = new Label("New Tenant Account");
-		titleLbl.setFont(titleFont);
-		titleLbl.setTranslateX(3);
-		
-		Line line = new Line();
-		line.setStartX(0); 
-		line.setEndX(400); 
-		line.setStartY(30);
-		line.setEndY(30);
-		line.setSmooth(true);
-		line.setStroke(Color.RED);
-		line.setStrokeWidth(5);
-		
-		//Name field
-		Label nameLbl = new Label("Name: ");
-		nameLbl.setTranslateX(3);
-		nameLbl.setTranslateY(38);
-		nameLbl.setFont(btnFont);
-		
-		TextField nameTxtF = new TextField();
-		nameTxtF.setTranslateX(65);
-		nameTxtF.setTranslateY(38);
-		
-		//Email field
-		Label emailLbl = new Label("Email: ");
-		emailLbl.setTranslateX(3);
-		emailLbl.setTranslateY(71);
-		emailLbl.setFont(btnFont);
-		
-		TextField emailTxtF = new TextField();
-		emailTxtF.setTranslateX(70);
-		emailTxtF.setTranslateY(71);
-		
-		//Password field
-		Label passwordLbl = new Label("Password:");
-		passwordLbl.setTranslateX(3);
-		passwordLbl.setTranslateY(104);
-		passwordLbl.setFont(btnFont);
-		
-		TextField passwordTxtF = new TextField();
-		passwordTxtF.setTranslateX(100);
-		passwordTxtF.setTranslateY(104);
-		
-		//Phone field
-		Label phoneLbl = new Label("Phone:");
-		phoneLbl.setTranslateX(3);
-		phoneLbl.setTranslateY(137);
-		phoneLbl.setFont(btnFont);
-		
-		TextField phoneTxtF = new TextField();
-		phoneTxtF.setTranslateX(70);
-		phoneTxtF.setTranslateY(137);
-		
-		//adds new tenant user to database;
-		Button createTenantAccBtn = new Button("Create Account");
-		createTenantAccBtn.setTranslateX(90);
-		createTenantAccBtn.setTranslateY(190);
-		
-		createTenantAccBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				//Inputed information from users
-				String inputedName = nameTxtF.getText();
-				String inputedEmail = emailTxtF.getText();
-				String inputedPassword = passwordTxtF.getText();
-				String inputedPhone = phoneTxtF.getText();
-				
-				//Checking in user inputed information is written correctly
-				if(inputedName.matches("^[A-Z][a-z]+ [A-Z][a-z]+$") && inputedEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
-						&& inputedPassword.matches("[\\w]{7,}"+"[!@#$%&*]{1}") && inputedPhone.matches("^(\\+?\\d{1,3}[-.\\s]?)?(\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4})$")) {
-					tenant.insertTenantToDB(inputedName, inputedEmail, inputedPassword, inputedPhone); //Adding new tenant to database
-					
-					//Adding new tenant info to tenant object
-					tenant.setName(inputedName);
-					tenant.setEmail(inputedEmail);
-					tenant.setPassword(inputedPassword);
-					tenant.setPhone(inputedPhone);
-					t.setRoot(tenantMakeLease(t)); //Takes new tenant user to make lease page
-					
-					
-					
-				//Display error message if format is wrong	
-				}else {
-					
-				}
-			}
-		});
-		
-		//Back button
-		Button backBtn = new Button("Back");
-		backBtn.setTranslateX(3);
-		backBtn.setTranslateY(250);
-		
-		backBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				t.setRoot(login(t)); //Takes user back to login page
-			}
-		});
-		
-		
-		Pane newTenantAccPane = new Pane();
-		
-		BackgroundFill background_fill = new BackgroundFill(Color.DARKCYAN,CornerRadii.EMPTY, Insets.EMPTY); 
-		Background background = new Background(background_fill);
-		newTenantAccPane.setBackground(background);
-		
-		newTenantAccPane.getChildren().addAll(titleLbl,line,nameLbl,nameTxtF,emailLbl,emailTxtF,passwordLbl,passwordTxtF,phoneLbl,phoneTxtF,createTenantAccBtn,backBtn);
-		return newTenantAccPane;
-	}
-	
 	//Where new landlords can create a new landlord account
 	public Pane newLandlordAcc(Scene t) {
 		
@@ -449,6 +335,8 @@ public class Property_FX extends Application{
 	}//register
 	
 	public Pane landlordRegApart(Scene t) {
+		t.getWindow().setHeight(320);
+		
 		Label titleLbl = new Label("Register Apartment Complex");
 		titleLbl.setFont(titleFont);
 		titleLbl.setTranslateX(3);
@@ -551,13 +439,283 @@ public class Property_FX extends Application{
 			}
 		});
 		
+		//Back button
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(250);
+				
+		backBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(landlordUI(t)); //Takes user back to login page
+			}
+		});
+		
 		Pane landlordRegApartPane = new Pane();
 		
-		landlordRegApartPane.getChildren().addAll(titleLbl,line,apartNameLbl,apartNameTxtF,locationLbl,locationTxtF,maxAmtLbl,maxAmtTxtF,apartTypeLbl,apartTypeCB,starsLbl,starCB,regApartBtn);
+		landlordRegApartPane.getChildren().addAll(titleLbl,line,apartNameLbl,apartNameTxtF,locationLbl,locationTxtF,maxAmtLbl,maxAmtTxtF,apartTypeLbl,apartTypeCB,starsLbl,starCB,regApartBtn,backBtn);
 		return landlordRegApartPane;
 	}
 	
+	//Home page for landlord users
+	public Pane landlordUI(Scene t) {
+		t.getWindow().setHeight(400);
+			
+		String name = landlord.getLandlordNameFromDB();
+			
+		Label titleLbl = new Label("Landlord Home Page");
+		titleLbl.setFont(titleFont);
+		titleLbl.setTranslateX(3);
+			
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);
+			
+		//Search database
+		Button searchBtn = new Button("Search");
+		searchBtn.setTranslateX(115);
+		searchBtn.setTranslateY(40);
+		searchBtn.setPrefHeight(50);
+		searchBtn.setPrefWidth(170);
+		searchBtn.setFont(btnFont);
+		
+		searchBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(landlordSearch(t));
+			}
+		});
+			
+		//Existing landlords can add apartments to database
+		Button addApartBtn = new Button("Add Apartment");
+		addApartBtn.setTranslateX(115);
+		addApartBtn.setTranslateY(100);
+		addApartBtn.setPrefHeight(50);
+		addApartBtn.setPrefWidth(170);
+		addApartBtn.setFont(btnFont);
+			
+		addApartBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(landlordRegApart(t)); //Takes landlord user to register apartment page
+			}
+		});
+			
+		Button requestsBtn = new Button("View Requests");
+		requestsBtn.setTranslateX(115);
+		requestsBtn.setTranslateY(160);
+		requestsBtn.setPrefHeight(50);
+		requestsBtn.setPrefWidth(170);
+		requestsBtn.setFont(btnFont);
+			
+		requestsBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(viewRequests(t)); 
+			}
+		});
+			
+		Button editApartsBtn = new Button("Edit Apartments");
+		editApartsBtn.setTranslateX(115);
+		editApartsBtn.setTranslateY(220);
+		editApartsBtn.setPrefHeight(50);
+		editApartsBtn.setPrefWidth(170);
+		editApartsBtn.setFont(new Font("Elephant",17));
+		
+		editApartsBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(editApartments(t)); 
+			}
+		});
+			
+		Button accBtn = new Button("Account");
+		accBtn.setTranslateX(115);
+		accBtn.setTranslateY(280);
+		accBtn.setPrefHeight(50);
+		accBtn.setPrefWidth(170);
+		accBtn.setFont(btnFont);
+		
+		accBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(viewLandlordAcc(t)); 
+			}
+		});
+			
+		Button logOutBtn = new Button("Logout");
+		logOutBtn.setTranslateX(3);
+		logOutBtn.setTranslateY(330);
+			
+		logOutBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				t.setRoot(landlordSearch(t));
+			}
+		});
+			
+			
+		Pane landlordUiPane = new Pane();
+			
+		landlordUiPane.getChildren().addAll(titleLbl,line,searchBtn,addApartBtn,logOutBtn,requestsBtn,editApartsBtn,accBtn);
+		return landlordUiPane;
+	}
+	
+	//Landlords can search for tenant information
+	public Pane landlordSearch(Scene t) {
+		
+		
+		Pane landlordSearchPane = new Pane();
+		return landlordSearchPane;
+	}
+	
+	//Landlords can view requests sent by tenants
+	public Pane viewRequests(Scene t) {
+			
+			
+		Pane viewRequestsPane = new Pane();
+		return viewRequestsPane;
+	}
+	
+	//Landlords can edit their apartment info
+	public Pane editApartments(Scene t) {
+				
+				
+		Pane editApartmentsPane = new Pane();
+		return editApartmentsPane;
+	}
+	
+	//Landlords can view and update account info
+	public Pane viewLandlordAcc(Scene t) {
+					
+					
+		Pane viewLandlordAccPane = new Pane();
+		return viewLandlordAccPane;
+	}
+	
+	//Where new tenants can create a new tenant account
+	public Pane newTenantAcc (Scene t) {
+			
+		Label titleLbl = new Label("New Tenant Account");
+		titleLbl.setFont(titleFont);
+		titleLbl.setTranslateX(3);
+			
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);
+			
+		//Name field
+		Label nameLbl = new Label("Name: ");
+		nameLbl.setTranslateX(3);
+		nameLbl.setTranslateY(38);
+		nameLbl.setFont(btnFont);
+			
+		TextField nameTxtF = new TextField();
+		nameTxtF.setTranslateX(65);
+		nameTxtF.setTranslateY(38);
+			
+		//Email field
+		Label emailLbl = new Label("Email: ");
+		emailLbl.setTranslateX(3);
+		emailLbl.setTranslateY(71);
+		emailLbl.setFont(btnFont);
+			
+		TextField emailTxtF = new TextField();
+		emailTxtF.setTranslateX(70);
+		emailTxtF.setTranslateY(71);
+			
+		//Password field
+		Label passwordLbl = new Label("Password:");
+		passwordLbl.setTranslateX(3);
+		passwordLbl.setTranslateY(104);
+		passwordLbl.setFont(btnFont);
+			
+		TextField passwordTxtF = new TextField();
+		passwordTxtF.setTranslateX(100);
+		passwordTxtF.setTranslateY(104);
+			
+		//Phone field
+		Label phoneLbl = new Label("Phone:");
+		phoneLbl.setTranslateX(3);
+		phoneLbl.setTranslateY(137);
+		phoneLbl.setFont(btnFont);
+			
+		TextField phoneTxtF = new TextField();
+		phoneTxtF.setTranslateX(70);
+		phoneTxtF.setTranslateY(137);
+			
+		//adds new tenant user to database;
+		Button createTenantAccBtn = new Button("Create Account");
+		createTenantAccBtn.setTranslateX(90);
+		createTenantAccBtn.setTranslateY(190);
+			
+		createTenantAccBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				//Inputed information from users
+				String inputedName = nameTxtF.getText();
+				String inputedEmail = emailTxtF.getText();
+				String inputedPassword = passwordTxtF.getText();
+				String inputedPhone = phoneTxtF.getText();
+					
+				//Checking in user inputed information is written correctly
+				if(inputedName.matches("^[A-Z][a-z]+ [A-Z][a-z]+$") && inputedEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
+						&& inputedPassword.matches("[\\w]{7,}"+"[!@#$%&*]{1}") && inputedPhone.matches("^(\\+?\\d{1,3}[-.\\s]?)?(\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4})$")) {
+					tenant.insertTenantToDB(inputedName, inputedEmail, inputedPassword, inputedPhone); //Adding new tenant to database
+						
+					//Adding new tenant info to tenant object
+					tenant.setName(inputedName);
+					tenant.setEmail(inputedEmail);
+					tenant.setPassword(inputedPassword);
+					tenant.setPhone(inputedPhone);
+					t.setRoot(tenantMakeLease(t)); //Takes new tenant user to make lease page
+						
+						
+						
+				//Display error message if format is wrong	
+				}else {
+						
+				}
+			 }
+		 });
+			
+		//Back button
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(250);
+			
+		backBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(login(t)); //Takes user back to login page
+			}
+		});
+			
+			
+		Pane newTenantAccPane = new Pane();
+			
+		BackgroundFill background_fill = new BackgroundFill(Color.DARKCYAN,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		newTenantAccPane.setBackground(background);
+			
+		newTenantAccPane.getChildren().addAll(titleLbl,line,nameLbl,nameTxtF,emailLbl,emailTxtF,passwordLbl,passwordTxtF,phoneLbl,phoneTxtF,createTenantAccBtn,backBtn);
+		return newTenantAccPane;
+	}
+	
 	public Pane tenantMakeLease(Scene t) {
+		
+		
 		Label titleLbl = new Label("Create New Lease");
 		titleLbl.setFont(titleFont);
 		titleLbl.setTranslateX(3);
@@ -687,65 +845,6 @@ public class Property_FX extends Application{
 		tenantMakeLeasePane.getChildren().addAll(titleLbl,line,apartComplexLbl,apartNameCB,leaseLengthLbl,leaseLengthCB,rentLbl,rentCB,rentBtn,dateLbl,dateTxtF,createLeaseBtn,errorMsg);
 		
 		return tenantMakeLeasePane;
-	}
-	
-	//Home page for landlord users
-	public Pane landlordUI(Scene t) {
-		String name = landlord.getLandlordNameFromDB();
-		
-		Label titleLbl = new Label("Home Page for: " + name);
-		titleLbl.setFont(titleFont);
-		titleLbl.setTranslateX(3);
-		
-		Line line = new Line();
-		line.setStartX(0); 
-		line.setEndX(400); 
-		line.setStartY(30);
-		line.setEndY(30);
-		line.setSmooth(true);
-		line.setStroke(Color.RED);
-		line.setStrokeWidth(5);
-		
-		//Search database
-		Button searchBtn = new Button("Search");
-		searchBtn.setTranslateX(150);
-		searchBtn.setTranslateY(40);
-		searchBtn.setPrefHeight(50);
-		searchBtn.setPrefWidth(100);
-		searchBtn.setFont(btnFont);
-		
-		//Existing landlords can add apartments to database
-		Button addApartBtn = new Button("Add Apartment");
-		addApartBtn.setTranslateX(115);
-		addApartBtn.setTranslateY(100);
-		addApartBtn.setPrefHeight(50);
-		addApartBtn.setPrefWidth(170);
-		addApartBtn.setFont(btnFont);
-		
-		addApartBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				t.setRoot(landlordRegApart(t)); //Takes landlord user to register apartment page
-			}
-		});
-		
-		Button logOutBtn = new Button("Logout");
-		logOutBtn.setTranslateX(3);
-		logOutBtn.setTranslateY(250);
-		
-		logOutBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				t.setRoot(login(t));
-			}
-		});
-		
-		
-		Pane landlordUiPane = new Pane();
-		
-		landlordUiPane.getChildren().addAll(titleLbl,line,searchBtn,addApartBtn,logOutBtn);
-		return landlordUiPane;
 	}
 	
 	//Home page for tenant users

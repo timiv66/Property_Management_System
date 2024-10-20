@@ -189,16 +189,5 @@ public class Apartment {
 		}
 	}
 	
-	public static void main(String[] args) {
-		Apartment apartment = new Apartment();
-		List<String> list = apartment.getAllApartmentNames();
-		
-		
-		for (String a : list) {
-		    System.out.println(a);
-		}
-	}
-	
-	
 
 }
