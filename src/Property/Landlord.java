@@ -151,6 +151,58 @@ public class Landlord {
 		return landlordPhone;
 	}
 	
+	public int getNumOfApartmentsForLandlord() {
+		int landlordID = getLandlordIdFromDB();
+		int numOfAparts = 0;
+		
+		Connection conn = null;
+		Statement numOfApartsStmt = null;
+		
+		String numOfApartsSQL = "SELECT num_of_apartments FROM landlords WHERE landlord_ID = " + landlordID;
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			numOfApartsStmt = conn.createStatement();
+			ResultSet numOfApartsRS = numOfApartsStmt.executeQuery(numOfApartsSQL);
+			
+			while(numOfApartsRS.next()) {
+				numOfAparts = numOfApartsRS.getInt(1);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return numOfAparts;
+	}
+	
+	public int getNumOfTenantsForLandlord() {
+		int landlordID = getLandlordIdFromDB();
+		int numOfTenants = 0;
+		
+		Connection conn = null;
+		Statement numOfTenantsStmt = null;
+		
+		String numOfTenantsSQL = "SELECT num_of_tenants FROM landlords WHERE landlord_ID = " + landlordID;
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			numOfTenantsStmt = conn.createStatement();
+			ResultSet numOfTenantsRS = numOfTenantsStmt.executeQuery(numOfTenantsSQL);
+			
+			while(numOfTenantsRS.next()) {
+				numOfTenants = numOfTenantsRS.getInt(1);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return numOfTenants;
+	}
+	
 	//inserts number of apartments a landlord has
 	public void updateNumofApartments() {
 		int landlordId = getLandlordIdFromDB();

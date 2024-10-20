@@ -516,7 +516,7 @@ public class Property_FX extends Application{
 		requestsBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				t.setRoot(viewRequests(t)); 
+				t.setRoot(viewRequests(t)); //Takes landlord user to register apartment page
 			}
 		});
 			
@@ -556,7 +556,7 @@ public class Property_FX extends Application{
 			@Override
 			public void handle(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				t.setRoot(landlordSearch(t));
+				t.setRoot(login(t));
 			}
 		});
 			
@@ -593,9 +593,93 @@ public class Property_FX extends Application{
 	
 	//Landlords can view and update account info
 	public Pane viewLandlordAcc(Scene t) {
-					
+		
+		Label titleLbl = new Label("Account Details");
+		titleLbl.setFont(titleFont);
+		titleLbl.setTranslateX(3);
+			
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);	
+		
+		//Shows landlord id
+		int landlordId = landlord.getLandlordIdFromDB();
+		Label landlordIdLbl = new Label("Landlord ID: " + landlordId);
+		landlordIdLbl.setTranslateX(3);
+		landlordIdLbl.setTranslateY(38);
+		landlordIdLbl.setFont(btnFont);
+		
+		String name = landlord.getName();
+		Label nameLbl = new Label("Full Name: " + name);
+		nameLbl.setTranslateX(3);
+		nameLbl.setTranslateY(71);
+		nameLbl.setFont(btnFont);
+		
+		//Email field
+		String email = landlord.getEmail();
+		Label emailLbl = new Label("Email: " + email);
+		emailLbl.setTranslateX(3);
+		emailLbl.setTranslateY(104);
+		emailLbl.setFont(btnFont);
+		
+		Button chgEmailBtn = new Button("Change Email");
+		chgEmailBtn.setTranslateX(250);
+		chgEmailBtn.setTranslateY(104);
+		
+		//Password field
+		String password = landlord.getPassword();
+		Label passwordLbl = new Label("Password: " + password);
+		passwordLbl.setTranslateX(3);
+		passwordLbl.setTranslateY(137);
+		passwordLbl.setFont(btnFont);
+		
+		Button chgPasswrdBtn = new Button("Change Password");
+		chgPasswrdBtn.setTranslateX(250);
+		chgPasswrdBtn.setTranslateY(137);
+	
+		//Phone field
+		String phone = landlord.getPhone();
+		Label phoneLbl = new Label("Phone: " + phone);
+		phoneLbl.setTranslateX(3);
+		phoneLbl.setTranslateY(170);
+		phoneLbl.setFont(btnFont);
+		
+		Button chgPhoneBtn = new Button("Change Phone");
+		chgPhoneBtn.setTranslateX(196);
+		chgPhoneBtn.setTranslateY(170);
+		
+		int numOfAparts = landlord.getNumOfApartmentsForLandlord();
+		Label numOfApartmentsLbl = new Label("Number of Apartments: " + numOfAparts);
+		numOfApartmentsLbl.setTranslateX(3);
+		numOfApartmentsLbl.setTranslateY(203);
+		numOfApartmentsLbl.setFont(btnFont);
+		
+		int numOfTenants = landlord.getNumOfTenantsForLandlord();
+		Label numOfTenantsLbl = new Label("Number of Tenants: " + numOfTenants);
+		numOfTenantsLbl.setTranslateX(3);
+		numOfTenantsLbl.setTranslateY(236);
+		numOfTenantsLbl.setFont(btnFont);
+		
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(330);
+			
+		backBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				t.setRoot(landlordUI(t));
+			}
+		});
 					
 		Pane viewLandlordAccPane = new Pane();
+		
+		viewLandlordAccPane.getChildren().addAll(titleLbl,line,landlordIdLbl,nameLbl,emailLbl,chgEmailBtn,passwordLbl,chgPasswrdBtn,phoneLbl,chgPhoneBtn,numOfApartmentsLbl,numOfTenantsLbl,backBtn);
 		return viewLandlordAccPane;
 	}
 	
