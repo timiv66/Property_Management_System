@@ -461,8 +461,6 @@ public class Property_FX extends Application{
 	public Pane landlordUI(Scene t) {
 		t.getWindow().setHeight(400);
 			
-		String name = landlord.getLandlordNameFromDB();
-			
 		Label titleLbl = new Label("Landlord Home Page");
 		titleLbl.setFont(titleFont);
 		titleLbl.setTranslateX(3);
@@ -593,6 +591,7 @@ public class Property_FX extends Application{
 	
 	//Landlords can view and update account info
 	public Pane viewLandlordAcc(Scene t) {
+		t.getWindow().setHeight(400);
 		
 		Label titleLbl = new Label("Account Details");
 		titleLbl.setFont(titleFont);
@@ -628,8 +627,15 @@ public class Property_FX extends Application{
 		emailLbl.setFont(btnFont);
 		
 		Button chgEmailBtn = new Button("Change Email");
-		chgEmailBtn.setTranslateX(250);
+		chgEmailBtn.setTranslateX(310);
 		chgEmailBtn.setTranslateY(104);
+		
+		chgEmailBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(chgLandlordEmail(t)); //Takes user landlord user to change email
+			}
+		} );
 		
 		//Password field
 		String password = landlord.getPassword();
@@ -639,7 +645,7 @@ public class Property_FX extends Application{
 		passwordLbl.setFont(btnFont);
 		
 		Button chgPasswrdBtn = new Button("Change Password");
-		chgPasswrdBtn.setTranslateX(250);
+		chgPasswrdBtn.setTranslateX(288);
 		chgPasswrdBtn.setTranslateY(137);
 	
 		//Phone field
@@ -681,6 +687,87 @@ public class Property_FX extends Application{
 		
 		viewLandlordAccPane.getChildren().addAll(titleLbl,line,landlordIdLbl,nameLbl,emailLbl,chgEmailBtn,passwordLbl,chgPasswrdBtn,phoneLbl,chgPhoneBtn,numOfApartmentsLbl,numOfTenantsLbl,backBtn);
 		return viewLandlordAccPane;
+	}
+	
+	public Pane chgLandlordEmail(Scene t) {
+		t.getWindow().setHeight(200);
+		
+		Label titleLbl = new Label("Change Email");
+		titleLbl.setFont(titleFont);
+		titleLbl.setTranslateX(3);
+			
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);	
+		
+		Label newLLEmailLbl = new Label("Enter New Email:");
+		newLLEmailLbl.setTranslateX(3);
+		newLLEmailLbl.setTranslateY(38);
+		newLLEmailLbl.setFont(btnFont);
+		
+		TextField newLLEmailTxtF = new TextField();
+		newLLEmailTxtF.setTranslateX(170);
+		newLLEmailTxtF.setTranslateY(38);
+		
+		Label reEnterEmailLbl = new Label("Re-Enter Email: ");
+		reEnterEmailLbl.setTranslateX(3);
+		reEnterEmailLbl.setTranslateY(71);
+		reEnterEmailLbl.setFont(btnFont);
+		
+		TextField reEnterEmailTxtF = new TextField();
+		reEnterEmailTxtF.setTranslateX(155);
+		reEnterEmailTxtF.setTranslateY(71);
+		
+		Text errorMsg = new Text("You Suck");
+		errorMsg.setFill(Color.RED);
+		errorMsg.setTranslateX(3);
+		errorMsg.setTranslateY(115);
+		errorMsg.setVisible(false);
+		
+		//Back button
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(134);
+					
+		backBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(viewLandlordAcc(t)); //Takes 
+			}
+		});
+		
+		Button enterBtn = new Button("Enter");
+		enterBtn.setTranslateX(353);
+		enterBtn.setTranslateY(134);
+		
+		enterBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				String newEmail = newLLEmailTxtF.getText();
+				String reEnterdNewEmail = reEnterEmailTxtF.getText();
+				
+				if(newEmail.matches(reEnterdNewEmail) && newEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$") ) {
+					landlord.updateLandlordEmail(newEmail);
+					landlord.setEmail(newEmail);
+					errorMsg.setText("Email has been updated.");
+					errorMsg.setVisible(true);
+				}else{
+					errorMsg.setText("The email is invalid or does not match. Please Try Again.");
+					errorMsg.setVisible(true);
+				}
+			}
+		});
+		
+		Pane chgLandlordEmailPane = new Pane();
+		
+		chgLandlordEmailPane.getChildren().addAll(titleLbl,line,newLLEmailLbl,newLLEmailTxtF,reEnterEmailLbl,reEnterEmailTxtF,enterBtn,backBtn,errorMsg);
+		return chgLandlordEmailPane;
+		
 	}
 	
 	//Where new tenants can create a new tenant account
@@ -932,9 +1019,7 @@ public class Property_FX extends Application{
 	}
 	
 	//Home page for tenant users
-	public Pane tenantUI(Scene t) {
-		String name = tenant.getTenantNameFromDB();
-		
+	public Pane tenantUI(Scene t) {		
 		Label titleLbl = new Label("Tenant Home Page");
 		titleLbl.setFont(titleFont);
 		titleLbl.setTranslateX(3);

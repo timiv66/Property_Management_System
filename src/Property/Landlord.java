@@ -268,8 +268,26 @@ public class Landlord {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	//Updates a landlords email in the database
+	public void updateLandlordEmail(String newEmail) {
+		int landlordId = getLandlordIdFromDB();
 		
-		
+		Connection conn = null;
+		Statement updateLandlordEmailStmt = null;
+
+		String updateLandlordEmailSQL = "UPDATE landlords SET email = '" + newEmail + "' WHERE landlord_ID = " + landlordId;
+	
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			updateLandlordEmailStmt = conn.createStatement();
+			updateLandlordEmailStmt.execute(updateLandlordEmailSQL);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	//Checks if landlord user is in the database
