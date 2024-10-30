@@ -239,7 +239,6 @@ public class Tenant {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		return true;
 	}
 	

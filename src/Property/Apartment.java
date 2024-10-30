@@ -189,5 +189,7 @@ public class Apartment {
 		}
 	}
 	
+	
+	
 
 }

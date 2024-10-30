@@ -1,11 +1,16 @@
 package Property;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class Landlord {
 	final String DB_URL = "jdbc:mysql://localhost:3306/propertysystem";
@@ -290,6 +295,46 @@ public class Landlord {
 		}
 	}
 	
+	//Updates a landlords password in the database
+	public void updateLandlordPasswrd(String newPasswrd) {
+		int landlordId = getLandlordIdFromDB();
+		
+		Connection conn = null;
+		Statement updateLandlordPasswrdStmt = null;
+
+		String updateLandlordPasswrdSQL = "UPDATE landlords SET passwrd = '" + newPasswrd + "' WHERE landlord_ID = " + landlordId;
+	
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			updateLandlordPasswrdStmt = conn.createStatement();
+			updateLandlordPasswrdStmt.execute(updateLandlordPasswrdSQL);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	//Updates a landlords phone in the database
+	public void updateLandlordPhone(String newPhone) {
+		int landlordId = getLandlordIdFromDB();
+		
+		Connection conn = null;
+		Statement updateLandlordPhoneStmt = null;
+
+		String updateLandlordPhoneSQL = "UPDATE landlords SET phone = '" + newPhone + "' WHERE landlord_ID = " + landlordId;
+	
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			updateLandlordPhoneStmt = conn.createStatement();
+			updateLandlordPhoneStmt.execute(updateLandlordPhoneSQL);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	//Checks if landlord user is in the database
 	public boolean authenticateLandlordUser(String inputedEmail, String inputedPassword) {
 		String dbEmail = null;
@@ -327,7 +372,91 @@ public class Landlord {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		return true;
 	}
+	
+	//Searches tenant and lease joined table based on search string
+	public List<String> searchTenants(String searchStr){
+		List<String> list = new ArrayList<String>();
+		int landlordId = getLandlordIdFromDB();
+		
+		Connection conn = null;
+		Statement searchStmt = null;
+		
+		String searchSQL = "SELECT distinct *\r\n" //Search query
+				+ "FROM tenants INNER JOIN leases ON tenants.tenant_ID = leases.tenant_ID\r\n"
+				+ "where full_name LIKE '" + searchStr + "%' AND tenants.landlord_ID = " + landlordId;
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			searchStmt = conn.createStatement();
+			ResultSet searchRS = searchStmt.executeQuery(searchSQL);
+			
+			while(searchRS.next()) {
+				//Fields of joined table
+				String name = searchRS.getString("full_name");
+				String email = searchRS.getString("email");
+				String phone = searchRS.getString("phone");
+				String apartName = searchRS.getString("apartment_name");
+				int rent = searchRS.getInt("rent");
+				
+				Date startDate = searchRS.getDate("start_date");
+				String startDateStr = String.valueOf(startDate);
+				
+				Date endDate = searchRS.getDate("end_date");
+				String endDateStr = String.valueOf(endDate);
+				
+				//Inputting data from joined table into string value then adds string value to list
+				String fullRecord = "Tenant name: " + name + ", Email: " + email + ", Phone: " + phone + ", "
+						+ "\nApartment Name: " + apartName + ", Rent: " + rent + ", Lease Start Date: " + startDateStr + ", Lease End Date: " + endDateStr;
+				list.add(fullRecord);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
+	
+	//Searches apartment and complextype joined table based on search string
+	public List<String> searchApartments(String searchStr){
+		List<String> list = new ArrayList<String>();
+		int landlordId = getLandlordIdFromDB();
+		
+		Connection conn = null;
+		Statement searchStmt = null;
+		
+		String searchSQL = "SELECT * FROM apartments INNER JOIN complextype ON " //Search query
+				+ "apartments.apartment_type = complextype.apartment_type "
+				+ "WHERE apartments.apartment_name LIKE '" + searchStr + "%' AND apartments.landlord_ID = " + landlordId ;
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			searchStmt = conn.createStatement();
+			ResultSet searchRS = searchStmt.executeQuery(searchSQL);
+			
+			while(searchRS.next()) {
+				
+				//Fields of joined table 
+				String apartName = searchRS.getString("apartment_name");
+				String apartType = searchRS.getString("apartment_type");
+				String location = searchRS.getString("location");
+				int numofTenants = searchRS.getInt("num_of_tenants");
+				int maxNumOfTenants = searchRS.getInt("max_num_of_tenants");
+				int stars = searchRS.getInt("stars");
+				int rent = searchRS.getInt("rent");
+				
+				//Inputting data from joined table into string value then adds string value to list
+				String fullRecord = "Apartment name: " + apartName + ", Apartment Type: " + apartType + ", Location: " + location + ", "
+						+ "\nNumber of Tenants: " + numofTenants + ", Max Capacity: " + maxNumOfTenants + ", Stars: " + stars + ", Rent: " + rent;
+				list.add(fullRecord);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
+	
 }

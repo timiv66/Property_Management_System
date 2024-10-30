@@ -19,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -294,7 +295,7 @@ public class Property_FX extends Application{
 				
 				//Checking in user inputed information is written correctly
 				if(inputedName.matches("^[A-Z][a-z]+ [A-Z][a-z]+$") && inputedEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
-						&& inputedPassword.matches("[\\w]{7,}"+"[!@#$%&*]{1}") && inputedPhone.matches("^(\\+?\\d{1,3}[-.\\s]?)?(\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4})$")) {
+						&& inputedPassword.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{7,}$") && inputedPhone.matches("^(\\+?\\d{1,3}[-.\\s]?)?(\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4})$")) {
 					landlord.insertLandlordToDB(inputedName, inputedEmail, inputedPassword, inputedPhone); //Adds new landlord user to database
 					
 					//Setting landlord object values to inputed information
@@ -459,6 +460,7 @@ public class Property_FX extends Application{
 	
 	//Home page for landlord users
 	public Pane landlordUI(Scene t) {
+		t.getWindow().setWidth(400);
 		t.getWindow().setHeight(400);
 			
 		Label titleLbl = new Label("Landlord Home Page");
@@ -567,9 +569,112 @@ public class Property_FX extends Application{
 	
 	//Landlords can search for tenant information
 	public Pane landlordSearch(Scene t) {
+		t.getWindow().setWidth(700);
+		t.getWindow().setHeight(230);
 		
+		Label titleLbl = new Label("Search");
+		titleLbl.setFont(titleFont);
+		titleLbl.setTranslateX(3);
+			
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(700); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);
+		
+		ImageView searchImg  = new ImageView("https://cdn-icons-png.flaticon.com/512/783/783889.png");
+		searchImg.setTranslateX(3);
+		searchImg.setTranslateY(38);
+		searchImg.setFitWidth(40);
+		searchImg.setFitHeight(40);
+		
+		Label searchLbl = new Label("Enter Tenant or Apartment");
+		searchLbl.setTranslateX(50);
+		searchLbl.setTranslateY(40);
+		searchLbl.setFont(btnFont);
+		
+		TextField searchTxtF = new TextField();
+		searchTxtF.setTranslateX(300);
+		searchTxtF.setTranslateY(40);
+		
+		//User choosing if they are a tenant or a landlord
+		ToggleGroup group = new ToggleGroup();
+
+		RadioButton tenantRBtn = new RadioButton("Tenants");
+		tenantRBtn.setToggleGroup(group);
+		tenantRBtn.setTranslateX(460);
+		tenantRBtn.setTranslateY(43);
+						
+		RadioButton apartRBtn = new RadioButton("Apartments");
+		apartRBtn.setToggleGroup(group);
+		apartRBtn.setTranslateX(540);
+		apartRBtn.setTranslateY(43);
+		
+		Button searchBtn = new Button("Search");
+		searchBtn.setTranslateX(3);
+		searchBtn.setTranslateY(83);
+		
+		Text resultTxt = new Text("");
+		resultTxt.setTranslateX(3);
+		resultTxt.setTranslateY(130);
+		
+		searchBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				//Landlords search tenants in database
+				if(tenantRBtn.isSelected() ) {
+					if(searchTxtF.getText().matches("")) { //What happens when search box is empty 
+						resultTxt.setText("Nothing in search box");
+					}else { //When search query is successful
+						String searchTxt = searchTxtF.getText();
+						List<String> tenantList = landlord.searchTenants(searchTxt);
+						
+						for (String i : tenantList) {
+							resultTxt.setText(i);
+						}
+						
+						if(tenantList.isEmpty()) {// What happens when there are no matches from search query
+							resultTxt.setText("No matches");
+						}
+					}
+				//Landlords search apartments in database	
+				}else if(apartRBtn.isSelected()) {
+					if(searchTxtF.getText().matches("")) {//What happens when search box is empty
+						resultTxt.setText("Nothing in search box");
+					}else {//When search query is successful
+						String searchTxt = searchTxtF.getText();
+						List<String> apartmentList = landlord.searchApartments(searchTxt);
+						for (String a : apartmentList) {
+							resultTxt.setText(a);
+						}
+					
+						if(apartmentList.isEmpty()) {// What happens when there are no matches from search query
+							resultTxt.setText("No matches");
+						}
+					}
+				//User needs to either select tenant or apartment button
+				}else if(!tenantRBtn.isSelected() && !apartRBtn.isSelected()) {
+					resultTxt.setText("Please choose either the tenant or apartment button");
+				}
+			}
+		});
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(163);
+		
+		backBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(landlordUI(t));
+			}
+		});
 		
 		Pane landlordSearchPane = new Pane();
+		
+		landlordSearchPane.getChildren().addAll(titleLbl,line,searchImg,searchLbl,searchTxtF,tenantRBtn,apartRBtn,searchBtn,resultTxt,backBtn);
 		return landlordSearchPane;
 	}
 	
@@ -647,6 +752,13 @@ public class Property_FX extends Application{
 		Button chgPasswrdBtn = new Button("Change Password");
 		chgPasswrdBtn.setTranslateX(288);
 		chgPasswrdBtn.setTranslateY(137);
+		
+		chgPasswrdBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(chgLandlordPassword(t));
+			}
+		});
 	
 		//Phone field
 		String phone = landlord.getPhone();
@@ -656,8 +768,15 @@ public class Property_FX extends Application{
 		phoneLbl.setFont(btnFont);
 		
 		Button chgPhoneBtn = new Button("Change Phone");
-		chgPhoneBtn.setTranslateX(196);
+		chgPhoneBtn.setTranslateX(305);
 		chgPhoneBtn.setTranslateY(170);
+		
+		chgPhoneBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(chgLandlordPhone(t));
+			}
+		});
 		
 		int numOfAparts = landlord.getNumOfApartmentsForLandlord();
 		Label numOfApartmentsLbl = new Label("Number of Apartments: " + numOfAparts);
@@ -770,6 +889,177 @@ public class Property_FX extends Application{
 		
 	}
 	
+	public Pane chgLandlordPassword(Scene t) {
+		t.getWindow().setHeight(200);
+		
+		Label titleLbl = new Label("Change Password");
+		titleLbl.setFont(titleFont);
+		titleLbl.setTranslateX(3);
+			
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);	
+		
+		Label newLLPasswrdLbl = new Label("Enter New Pasword:");
+		newLLPasswrdLbl.setTranslateX(3);
+		newLLPasswrdLbl.setTranslateY(38);
+		newLLPasswrdLbl.setFont(btnFont);
+		
+		TextField newLLPasswrdTxtF = new TextField();
+		newLLPasswrdTxtF.setTranslateX(192);
+		newLLPasswrdTxtF.setTranslateY(38);
+		
+		Label reEnterPasswrdLbl = new Label("Re-Enter Password: ");
+		reEnterPasswrdLbl.setTranslateX(3);
+		reEnterPasswrdLbl.setTranslateY(71);
+		reEnterPasswrdLbl.setFont(btnFont);
+		
+		TextField reEnterPasswrdTxtF = new TextField();
+		reEnterPasswrdTxtF.setTranslateX(185);
+		reEnterPasswrdTxtF.setTranslateY(71);
+		
+		Text errorMsg = new Text("You Suck");
+		errorMsg.setFill(Color.RED);
+		errorMsg.setTranslateX(3);
+		errorMsg.setTranslateY(115);
+		errorMsg.setVisible(false);
+		
+		//Back button
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(134);
+					
+		backBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(viewLandlordAcc(t)); //Takes 
+			}
+		});
+		
+		Button enterBtn = new Button("Enter");
+		enterBtn.setTranslateX(353);
+		enterBtn.setTranslateY(134);
+		
+		enterBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				String newPasswrd = newLLPasswrdTxtF.getText();
+				String reEnterdNewPasswrd = reEnterPasswrdTxtF.getText();
+				
+				try {
+					if(newPasswrd.matches(reEnterdNewPasswrd) && newPasswrd.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{7,}$")) {
+						landlord.updateLandlordPasswrd(newPasswrd);
+						landlord.setPassword(newPasswrd);
+						errorMsg.setText("Pasword has been updated.");
+						errorMsg.setVisible(true);
+					}else{
+						errorMsg.setText("The password is invalid or does not match. Please Try Again.");
+						errorMsg.setVisible(true);
+					}
+				}catch(Exception e) {
+					errorMsg.setText("Password must include at least one uppercase, lowercase and special character");
+					errorMsg.setVisible(true);
+				}
+			}
+		});
+		
+		Pane chgLandlordEmailPane = new Pane();
+		
+		chgLandlordEmailPane.getChildren().addAll(titleLbl,line,newLLPasswrdLbl,newLLPasswrdTxtF,reEnterPasswrdLbl,reEnterPasswrdTxtF,enterBtn,backBtn,errorMsg);
+		return chgLandlordEmailPane;
+		
+	}
+	
+	public Pane chgLandlordPhone(Scene t) {
+		t.getWindow().setHeight(200);
+		
+		Label titleLbl = new Label("Change Phone Number");
+		titleLbl.setFont(titleFont);
+		titleLbl.setTranslateX(3);
+			
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);	
+		
+		Label newLLPhoneLbl = new Label("Enter New Number:");
+		newLLPhoneLbl.setTranslateX(3);
+		newLLPhoneLbl.setTranslateY(38);
+		newLLPhoneLbl.setFont(btnFont);
+		
+		TextField newLLPhoneTxtF = new TextField();
+		newLLPhoneTxtF.setTranslateX(192);
+		newLLPhoneTxtF.setTranslateY(38);
+		
+		Label reEnterPhoneLbl = new Label("Re-Enter Number: ");
+		reEnterPhoneLbl.setTranslateX(3);
+		reEnterPhoneLbl.setTranslateY(71);
+		reEnterPhoneLbl.setFont(btnFont);
+		
+		TextField reEnterPhoneTxtF = new TextField();
+		reEnterPhoneTxtF.setTranslateX(185);
+		reEnterPhoneTxtF.setTranslateY(71);
+		
+		Text errorMsg = new Text("You Suck");
+		errorMsg.setFill(Color.RED);
+		errorMsg.setTranslateX(3);
+		errorMsg.setTranslateY(115);
+		errorMsg.setVisible(false);
+		
+		//Back button
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(134);
+					
+		backBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(viewLandlordAcc(t)); //Takes 
+			}
+		});
+		
+		Button enterBtn = new Button("Enter");
+		enterBtn.setTranslateX(353);
+		enterBtn.setTranslateY(134);
+		
+		enterBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				String newPhone = newLLPhoneTxtF.getText();
+				String reEnterdNewPhone = reEnterPhoneTxtF.getText();
+				
+				try {
+					if(newPhone.matches(reEnterdNewPhone) && newPhone.matches("^(\\+?\\d{1,3}[-.\\s]?)?(\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4})$")) {
+						landlord.updateLandlordPhone(newPhone);
+						landlord.setPhone(newPhone);
+						errorMsg.setText("Phone number has been updated.");
+						errorMsg.setVisible(true);
+					}else{
+						errorMsg.setText("The phone number is invalid or does not match. Please Try Again.");
+						errorMsg.setVisible(true);
+					}
+				}catch(Exception e) {
+
+				}
+			}
+		});
+		
+		Pane chgLandlordEmailPane = new Pane();
+		
+		chgLandlordEmailPane.getChildren().addAll(titleLbl,line,newLLPhoneLbl,newLLPhoneTxtF,reEnterPhoneLbl,reEnterPhoneTxtF,enterBtn,backBtn,errorMsg);
+		return chgLandlordEmailPane;
+		
+	}
+	
 	//Where new tenants can create a new tenant account
 	public Pane newTenantAcc (Scene t) {
 			
@@ -842,7 +1132,7 @@ public class Property_FX extends Application{
 					
 				//Checking in user inputed information is written correctly
 				if(inputedName.matches("^[A-Z][a-z]+ [A-Z][a-z]+$") && inputedEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
-						&& inputedPassword.matches("[\\w]{7,}"+"[!@#$%&*]{1}") && inputedPhone.matches("^(\\+?\\d{1,3}[-.\\s]?)?(\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4})$")) {
+						&& inputedPassword.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{7,}$") && inputedPhone.matches("^(\\+?\\d{1,3}[-.\\s]?)?(\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4})$")) {
 					tenant.insertTenantToDB(inputedName, inputedEmail, inputedPassword, inputedPhone); //Adding new tenant to database
 						
 					//Adding new tenant info to tenant object
