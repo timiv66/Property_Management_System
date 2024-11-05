@@ -1,6 +1,7 @@
 package Property;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -69,31 +70,6 @@ public class Lease {
 		this.lease = lease;
 	}
 	
-	
-	//Gets rent from joined table in database
-	public int getRentFromDB(String apartName) {
-		int rent = 0;
-		Connection conn = null;
-		Statement rentStmt = null;
-		
-		String rentSQL = "SELECT rent FROM complextype INNER JOIN apartments ON complextype.apartment_type = apartments.apartment_type WHERE apartment_name = '" + apartName + "'";
-		
-		try {
-			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-			
-			rentStmt = conn.createStatement();
-			ResultSet rentRS = rentStmt.executeQuery(rentSQL);
-			
-			while(rentRS.next()) {
-				rent = rentRS.getInt(1);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return rent;
-	}
-	
 	//Creates new lease and adds it to database
 	public void createLease(Tenant tenant, Apartment apartment, String apartmentName, int length, int rent, String start_date, String end_date) {
 		String leaseId = generateLeaseID();
@@ -123,6 +99,151 @@ public class Lease {
 			e.printStackTrace();
 		}
 	}
+	public String getLeaseIdFromLease(Tenant tenant) {
+		String leaseId = null;
+		Connection conn = null;
+		Statement leaseIdStmt = null;
+		
+		String leaseIdSQL = "SELECT lease_ID FROM leases WHERE tenant_ID = " + tenant.getTenantIdFromDB();
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			
+			leaseIdStmt = conn.createStatement();
+			ResultSet leaseIdRS = leaseIdStmt.executeQuery(leaseIdSQL);
+			
+			while(leaseIdRS.next()) {
+				leaseId = leaseIdRS.getString(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return leaseId;
+	}
+	
+	public String getApartNameFromLease(Tenant tenant) {
+		String apartName = null;
+		Connection conn = null;
+		Statement apartNameStmt = null;
+		
+		String apartNameSQL = "SELECT apartment_name FROM leases WHERE tenant_ID = " + tenant.getTenantIdFromDB();
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			
+			apartNameStmt = conn.createStatement();
+			ResultSet apartNameRS = apartNameStmt.executeQuery(apartNameSQL);
+			
+			while(apartNameRS.next()) {
+				apartName = apartNameRS.getString(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return apartName;
+	}
+	
+	public int getLeaseLengthFromLease(Tenant tenant) {
+		int leaseLength = 0;
+		Connection conn = null;
+		Statement leaseLengthStmt = null;
+		
+		String leaseLengthSQL = "SELECT length FROM leases WHERE tenant_ID = " + tenant.getTenantIdFromDB();
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			
+			leaseLengthStmt = conn.createStatement();
+			ResultSet leaseLengthRS = leaseLengthStmt.executeQuery(leaseLengthSQL);
+			
+			while(leaseLengthRS.next()) {
+				leaseLength = leaseLengthRS.getInt(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return leaseLength;
+	}
+	
+	public int getRentFromLease(Tenant tenant) {
+		int rent = 0;
+		Connection conn = null;
+		Statement rentStmt = null;
+		
+		String rentSQL = "SELECT rent FROM leases WHERE tenant_ID = " + tenant.getTenantIdFromDB();
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			
+			rentStmt = conn.createStatement();
+			ResultSet rentRS = rentStmt.executeQuery(rentSQL);
+			
+			while(rentRS.next()) {
+				rent = rentRS.getInt(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return rent;
+	}
+	
+	public String getStartDateFromLease(Tenant tenant) {
+		Date startDate = null;
+		
+		Connection conn = null;
+		Statement startDateStmt = null;
+		
+		String startDateSQL = "SELECT start_date FROM leases WHERE tenant_ID = " + tenant.getTenantIdFromDB();
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			
+			startDateStmt = conn.createStatement();
+			ResultSet startDateRS = startDateStmt.executeQuery(startDateSQL);
+			
+			while(startDateRS.next()) {
+				startDate = startDateRS.getDate(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String startDateStr = String.valueOf(startDate);
+		return startDateStr;
+	}
+	
+	public String getEndDateFromLease(Tenant tenant) {
+		Date endDate = null;
+		
+		Connection conn = null;
+		Statement endDateStmt = null;
+		
+		String endDateSQL = "SELECT end_date FROM leases WHERE tenant_ID = " + tenant.getTenantIdFromDB();
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			
+			endDateStmt = conn.createStatement();
+			ResultSet endDateRS = endDateStmt.executeQuery(endDateSQL);
+			
+			while(endDateRS.next()) {
+				endDate = endDateRS.getDate(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String endDateStr = String.valueOf(endDate);
+		return endDateStr;
+	}
 	
 	//Gets landlordID from lease table in database
 	public int getLandlordIDFromLease(Tenant tenant) {
@@ -146,6 +267,32 @@ public class Lease {
 			e.printStackTrace();
 		}
 		return landlordId;
+	}
+	
+	public String getLandlordNameFromLease(Tenant tenant) {
+		String landlordName = null;
+		Connection conn = null;
+		Statement landlordNameStmt = null;
+		
+		String landlordNameSQL = "SELECT full_name FROM landlords INNER JOIN leases \r\n"
+				+ "ON landlords.landlord_ID = leases.landlord_ID \r\n"
+				+ "WHERE leases.tenant_ID = " + tenant.getTenantIdFromDB();
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			
+			landlordNameStmt = conn.createStatement();
+			ResultSet landlordNameRS = landlordNameStmt.executeQuery(landlordNameSQL);
+			
+			while(landlordNameRS.next()) {
+				landlordName = landlordNameRS.getString(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return landlordName;
 	}
 	
 	

@@ -189,6 +189,30 @@ public class Apartment {
 		}
 	}
 	
+	//Gets rent from joined table in database
+		public int getRentFromDB(String apartName) {
+			int rent = 0;
+			Connection conn = null;
+			Statement rentStmt = null;
+			
+			String rentSQL = "SELECT rent FROM complextype INNER JOIN apartments ON complextype.apartment_type = apartments.apartment_type WHERE apartment_name = '" + apartName + "'";
+			
+			try {
+				conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+				
+				rentStmt = conn.createStatement();
+				ResultSet rentRS = rentStmt.executeQuery(rentSQL);
+				
+				while(rentRS.next()) {
+					rent = rentRS.getInt(1);
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return rent;
+		}
+	
 	
 	
 

@@ -1037,7 +1037,7 @@ public class Property_FX extends Application{
 			@Override
 			public void handle(ActionEvent arg0) {
 				apartment.setName(apartNameCB.getValue());
-				int rent = lease.getRentFromDB(apartment.getName());
+				int rent = apartment.getRentFromDB(apartment.getName());
 				rentCB.getItems().clear();
 				rentCB.getItems().add(rent);
 			}
@@ -1211,8 +1211,61 @@ public class Property_FX extends Application{
 	}
 	
 	public Pane tenantSearch(Scene t) {
+		t.getWindow().setWidth(700);
+		t.getWindow().setHeight(230);
+		
+		Label titleLbl = new Label("Search");
+		titleLbl.setFont(titleFont);
+		titleLbl.setTranslateX(3);
+			
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(700); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);
+		
+		ImageView searchImg  = new ImageView("https://cdn-icons-png.flaticon.com/512/783/783889.png");
+		searchImg.setTranslateX(3);
+		searchImg.setTranslateY(38);
+		searchImg.setFitWidth(40);
+		searchImg.setFitHeight(40);
+		
+		Label searchLbl = new Label("Enter Landlord or Apartments");
+		searchLbl.setTranslateX(50);
+		searchLbl.setTranslateY(40);
+		searchLbl.setFont(btnFont);
+		
+		TextField searchTxtF = new TextField();
+		searchTxtF.setTranslateX(330);
+		searchTxtF.setTranslateY(40);
+		
+		
+		ToggleGroup group = new ToggleGroup();
+
+		RadioButton landlordRBtn = new RadioButton("Landlords");
+		landlordRBtn.setToggleGroup(group);
+		landlordRBtn.setTranslateX(490);
+		landlordRBtn.setTranslateY(43);
+						
+		RadioButton apartRBtn = new RadioButton("Apartments");
+		apartRBtn.setToggleGroup(group);
+		apartRBtn.setTranslateX(570);
+		apartRBtn.setTranslateY(43);
+		
+		Button searchBtn = new Button("Search");
+		searchBtn.setTranslateX(3);
+		searchBtn.setTranslateY(83);
+		
+		Text resultTxt = new Text("");
+		resultTxt.setTranslateX(3);
+		resultTxt.setTranslateY(130);
 		
 		Pane tenantSearchPane = new Pane();
+		
+		tenantSearchPane.getChildren().addAll(titleLbl,line,searchImg,searchLbl,searchTxtF,landlordRBtn,apartRBtn,searchBtn,resultTxt);
 		return tenantSearchPane;
 	}
 	
@@ -1332,8 +1385,77 @@ public class Property_FX extends Application{
 	}
 	
 	public Pane viewLease(Scene t) {
+		Label titleLbl = new Label("Lease Details");
+		titleLbl.setFont(titleFont);
+		titleLbl.setTranslateX(3);
+			
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);	
+		
+		String leaseId = lease.getLeaseIdFromLease(tenant);
+		Label leaseIdLbl = new Label("Lease ID: " + leaseId);
+		leaseIdLbl.setTranslateX(3);
+		leaseIdLbl.setTranslateY(38);
+		leaseIdLbl.setFont(btnFont);
+		
+		String apartName = lease.getApartNameFromLease(tenant);
+		Label apartNameLbl = new Label("Apartment Name: " + apartName);
+		apartNameLbl.setTranslateX(3);
+		apartNameLbl.setTranslateY(71);
+		apartNameLbl.setFont(btnFont);
+		
+		int leaseLength = lease.getLeaseLengthFromLease(tenant);
+		Label leaseLengthLbl = new Label("Lease Length(Years): " + leaseLength);
+		leaseLengthLbl.setTranslateX(3);
+		leaseLengthLbl.setTranslateY(104);
+		leaseLengthLbl.setFont(btnFont);
+		
+		int rent = lease.getRentFromLease(tenant);
+		Label rentLbl = new Label("Rent: " + rent);
+		rentLbl.setTranslateX(3);
+		rentLbl.setTranslateY(137);
+		rentLbl.setFont(btnFont);
+		
+		String leaseStartDate = lease.getStartDateFromLease(tenant);
+		Label leaseStartDateLbl = new Label("Lease Start Date: " + leaseStartDate);
+		leaseStartDateLbl.setTranslateX(3);
+		leaseStartDateLbl.setTranslateY(170);
+		leaseStartDateLbl.setFont(btnFont);
+		
+		String leaseEndDate = lease.getEndDateFromLease(tenant);
+		Label leaseEndDateLbl = new Label("Lease End Date: " + leaseEndDate);
+		leaseEndDateLbl.setTranslateX(3);
+		leaseEndDateLbl.setTranslateY(203);
+		leaseEndDateLbl.setFont(btnFont);
+		
+		int landlordId = lease.getLandlordIDFromLease(tenant);
+		String landlordName = lease.getLandlordNameFromLease(tenant);
+		Label landlordLbl = new Label("Landlord Info) \n   Landlord ID: " + landlordId  +" \n   Landlord Name: " + landlordName);
+		landlordLbl.setTranslateX(3);
+		landlordLbl.setTranslateY(236);
+		landlordLbl.setFont(btnFont);
+		
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(335);
+		
+		backBtn.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(tenantUI(t));
+			}
+		});
 		
 		Pane viewLeasePane = new Pane();
+		
+		viewLeasePane.getChildren().addAll(titleLbl,line,leaseIdLbl,apartNameLbl,leaseLengthLbl,rentLbl,leaseStartDateLbl,leaseEndDateLbl,landlordLbl,backBtn);
 		return viewLeasePane;
 	}
 	
