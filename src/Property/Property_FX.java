@@ -1433,7 +1433,7 @@ public class Property_FX extends Application{
 				
 		Button logOutBtn = new Button("Logout");
 		logOutBtn.setTranslateX(3);
-		logOutBtn.setTranslateY(345);
+		logOutBtn.setTranslateY(344);
 		
 		logOutBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
