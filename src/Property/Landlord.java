@@ -459,4 +459,31 @@ public class Landlord {
 		return list;
 	}
 	
+	public List<String> getAllApartmentNames(){
+		List<String> list = new ArrayList<String>();
+		int landlordId = getLandlordIdFromDB();
+		
+		Connection conn = null;
+		Statement apartmentNamesStmt = null;
+		
+		String apartNameSQL = "SELECT apartment_name FROM apartments WHERE landlord_ID = " + landlordId;
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			apartmentNamesStmt = conn.createStatement();
+			ResultSet apartmentNameRS = apartmentNamesStmt.executeQuery(apartNameSQL);
+			
+			while(apartmentNameRS.next()) {
+				String a = apartmentNameRS.getString("apartment_name");
+				list.add(a);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return list;
+	}
+	
 }

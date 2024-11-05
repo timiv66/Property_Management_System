@@ -15,5 +15,6 @@
 	<classpathentry kind="lib" path="C:/Users/timiv/java prac/mssql-jdbc-12.8.1.jre11-sources.jar"/>
 	<classpathentry kind="lib" path="C:/Users/timiv/java prac/mysql-connector-j-9.0.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/timiv/java prac/ojdbc11.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -460,8 +460,8 @@ public class Property_FX extends Application{
 	
 	//Home page for landlord users
 	public Pane landlordUI(Scene t) {
-		t.getWindow().setWidth(400);
-		t.getWindow().setHeight(400);
+		t.getWindow().setWidth(410);
+		t.getWindow().setHeight(350);
 			
 		Label titleLbl = new Label("Landlord Home Page");
 		titleLbl.setFont(titleFont);
@@ -519,24 +519,10 @@ public class Property_FX extends Application{
 				t.setRoot(viewRequests(t)); //Takes landlord user to register apartment page
 			}
 		});
-			
-		Button editApartsBtn = new Button("Edit Apartments");
-		editApartsBtn.setTranslateX(115);
-		editApartsBtn.setTranslateY(220);
-		editApartsBtn.setPrefHeight(50);
-		editApartsBtn.setPrefWidth(170);
-		editApartsBtn.setFont(new Font("Elephant",17));
-		
-		editApartsBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				t.setRoot(editApartments(t)); 
-			}
-		});
-			
+				
 		Button accBtn = new Button("Account");
 		accBtn.setTranslateX(115);
-		accBtn.setTranslateY(280);
+		accBtn.setTranslateY(220);
 		accBtn.setPrefHeight(50);
 		accBtn.setPrefWidth(170);
 		accBtn.setFont(btnFont);
@@ -550,7 +536,7 @@ public class Property_FX extends Application{
 			
 		Button logOutBtn = new Button("Logout");
 		logOutBtn.setTranslateX(3);
-		logOutBtn.setTranslateY(330);
+		logOutBtn.setTranslateY(280);
 			
 		logOutBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -563,7 +549,7 @@ public class Property_FX extends Application{
 			
 		Pane landlordUiPane = new Pane();
 			
-		landlordUiPane.getChildren().addAll(titleLbl,line,searchBtn,addApartBtn,logOutBtn,requestsBtn,editApartsBtn,accBtn);
+		landlordUiPane.getChildren().addAll(titleLbl,line,searchBtn,addApartBtn,logOutBtn,requestsBtn,accBtn);
 		return landlordUiPane;
 	}
 	
@@ -637,7 +623,7 @@ public class Property_FX extends Application{
 						}
 						
 						if(tenantList.isEmpty()) {// What happens when there are no matches from search query
-							resultTxt.setText("No matches");
+							resultTxt.setText("No matches ");
 						}
 					}
 				//Landlords search apartments in database	
@@ -688,15 +674,64 @@ public class Property_FX extends Application{
 	
 	//Landlords can edit their apartment info
 	public Pane editApartments(Scene t) {
+		
+		t.getWindow().setHeight(320);
+		
+		Label titleLbl = new Label("Edit Apartment Complex");
+		titleLbl.setFont(titleFont);
+		titleLbl.setTranslateX(3);
+		
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);		
+		
+		//Apartment name field
+		Label apartNameLbl = new Label("Apartment Name: ");
+		apartNameLbl.setTranslateX(3);
+		apartNameLbl.setTranslateY(38);
+		apartNameLbl.setFont(btnFont);
+		
+		ChoiceBox<String> apartNameCB = new ChoiceBox<String>();
+		apartNameCB.setTranslateX(170);
+		apartNameCB.setTranslateY(38);
+		List<String> apartNameList = landlord.getAllApartmentNames();
+		
+		//Adds all apartment names that a logged in landlord owns
+		int i = 0;
+		while(i < apartNameList.size()) {
+			apartNameCB.getItems().add(apartNameList.get(i));
+			i++;
+		}
+		
+		Button editBtn = new Button("Edit");
+		editBtn.setTranslateX(290);
+		editBtn.setTranslateY(38);
+		
+		//Email field
+		Label emailLbl = new Label("Email: ");
+		emailLbl.setTranslateX(3);
+		emailLbl.setTranslateY(71);
+		emailLbl.setFont(btnFont);
 				
+		TextField emailTxtF = new TextField();
+		emailTxtF.setTranslateX(70);
+		emailTxtF.setTranslateY(71);
 				
 		Pane editApartmentsPane = new Pane();
+		
+		editApartmentsPane.getChildren().addAll(titleLbl,line,apartNameLbl,apartNameCB,editBtn);
 		return editApartmentsPane;
 	}
 	
 	//Landlords can view and update account info
 	public Pane viewLandlordAcc(Scene t) {
 		t.getWindow().setHeight(400);
+		t.getWindow().setWidth(412);
 		
 		Label titleLbl = new Label("Account Details");
 		titleLbl.setFont(titleFont);
@@ -1309,7 +1344,9 @@ public class Property_FX extends Application{
 	}
 	
 	//Home page for tenant users
-	public Pane tenantUI(Scene t) {		
+	public Pane tenantUI(Scene t) {	
+		t.getWindow().setHeight(410);
+		
 		Label titleLbl = new Label("Tenant Home Page");
 		titleLbl.setFont(titleFont);
 		titleLbl.setTranslateX(3);
@@ -1323,9 +1360,80 @@ public class Property_FX extends Application{
 		line.setStroke(Color.RED);
 		line.setStrokeWidth(5);
 		
+		Button searchBtn = new Button("Search");
+		searchBtn.setTranslateX(115);
+		searchBtn.setTranslateY(40);
+		searchBtn.setPrefHeight(50);
+		searchBtn.setPrefWidth(170);
+		searchBtn.setFont(btnFont);
+				
+		searchBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(tenantSearch(t));
+			}
+		});
+					
+		
+		Button chgApartBtn = new Button("Change Apartments");
+		chgApartBtn.setTranslateX(115);
+		chgApartBtn.setTranslateY(100);
+		chgApartBtn.setPrefHeight(50);
+		chgApartBtn.setPrefWidth(170);
+		chgApartBtn.setFont(new Font("Elephant",14));
+					
+		chgApartBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(chgApartment(t)); 
+			}
+		});
+					
+		Button requestsBtn = new Button("Make Request");
+		requestsBtn.setTranslateX(115);
+		requestsBtn.setTranslateY(160);
+		requestsBtn.setPrefHeight(50);
+		requestsBtn.setPrefWidth(170);
+		requestsBtn.setFont(btnFont);
+					
+		requestsBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(makeRequest(t)); 
+			}
+		});
+						
+		Button accBtn = new Button("Account");
+		accBtn.setTranslateX(115);
+		accBtn.setTranslateY(220);
+		accBtn.setPrefHeight(50);
+		accBtn.setPrefWidth(170);
+		accBtn.setFont(btnFont);
+				
+		accBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(teanantAccInfo(t)); 
+			}
+		});
+		
+		Button leaseBtn = new Button("View Lease");
+		leaseBtn.setTranslateX(115);
+		leaseBtn.setTranslateY(280);
+		leaseBtn.setPrefHeight(50);
+		leaseBtn.setPrefWidth(170);
+		leaseBtn.setFont(btnFont);
+		
+		leaseBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(viewLease(t));
+			}
+		});
+				
 		Button logOutBtn = new Button("Logout");
 		logOutBtn.setTranslateX(3);
-		logOutBtn.setTranslateY(250);
+		logOutBtn.setTranslateY(345);
 		
 		logOutBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -1337,8 +1445,40 @@ public class Property_FX extends Application{
 		
 		Pane tenantUiPane = new Pane();
 		
-		tenantUiPane.getChildren().addAll(titleLbl,line,logOutBtn);
+		tenantUiPane.getChildren().addAll(titleLbl,line,searchBtn,chgApartBtn,requestsBtn,accBtn,leaseBtn,logOutBtn);
 		return tenantUiPane;
+	}
+	
+	public Pane tenantSearch(Scene t) {
+		
+		Pane tenantSearchPane = new Pane();
+		return tenantSearchPane;
+	}
+	
+	public Pane chgApartment(Scene t) {
+		
+		Pane chgApartmentPane = new Pane();
+		return chgApartmentPane;
+	}
+	
+	public Pane makeRequest(Scene t) {
+		
+		
+		Pane makeRequestPane = new Pane();
+		return makeRequestPane;
+	}
+	
+	public Pane teanantAccInfo (Scene t) {
+		
+		
+		Pane teanantAccInfoPane = new Pane();
+		return teanantAccInfoPane;
+	}
+	
+	public Pane viewLease(Scene t) {
+		
+		Pane viewLeasePane = new Pane();
+		return viewLeasePane;
 	}
 
 }
