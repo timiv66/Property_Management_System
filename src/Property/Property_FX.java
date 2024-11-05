@@ -543,6 +543,11 @@ public class Property_FX extends Application{
 			public void handle(ActionEvent arg0) {
 				// TODO Auto-generated method stub
 				t.setRoot(login(t));
+				
+				landlord.setName(null);
+				landlord.setEmail(null);
+				landlord.setPassword(null);
+				landlord.setPhone(null);
 			}
 		});
 			
@@ -773,7 +778,7 @@ public class Property_FX extends Application{
 		chgEmailBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				t.setRoot(chgLandlordEmail(t)); //Takes user landlord user to change email
+				t.setRoot(chgUserEmail(t)); //Takes user landlord user to change email
 			}
 		} );
 		
@@ -791,7 +796,7 @@ public class Property_FX extends Application{
 		chgPasswrdBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				t.setRoot(chgLandlordPassword(t));
+				t.setRoot(chgUserPassword(t));
 			}
 		});
 	
@@ -809,7 +814,7 @@ public class Property_FX extends Application{
 		chgPhoneBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				t.setRoot(chgLandlordPhone(t));
+				t.setRoot(chgUserPhone(t));
 			}
 		});
 		
@@ -843,257 +848,9 @@ public class Property_FX extends Application{
 		return viewLandlordAccPane;
 	}
 	
-	public Pane chgLandlordEmail(Scene t) {
-		t.getWindow().setHeight(200);
-		
-		Label titleLbl = new Label("Change Email");
-		titleLbl.setFont(titleFont);
-		titleLbl.setTranslateX(3);
-			
-		Line line = new Line();
-		line.setStartX(0); 
-		line.setEndX(400); 
-		line.setStartY(30);
-		line.setEndY(30);
-		line.setSmooth(true);
-		line.setStroke(Color.RED);
-		line.setStrokeWidth(5);	
-		
-		Label newLLEmailLbl = new Label("Enter New Email:");
-		newLLEmailLbl.setTranslateX(3);
-		newLLEmailLbl.setTranslateY(38);
-		newLLEmailLbl.setFont(btnFont);
-		
-		TextField newLLEmailTxtF = new TextField();
-		newLLEmailTxtF.setTranslateX(170);
-		newLLEmailTxtF.setTranslateY(38);
-		
-		Label reEnterEmailLbl = new Label("Re-Enter Email: ");
-		reEnterEmailLbl.setTranslateX(3);
-		reEnterEmailLbl.setTranslateY(71);
-		reEnterEmailLbl.setFont(btnFont);
-		
-		TextField reEnterEmailTxtF = new TextField();
-		reEnterEmailTxtF.setTranslateX(155);
-		reEnterEmailTxtF.setTranslateY(71);
-		
-		Text errorMsg = new Text("You Suck");
-		errorMsg.setFill(Color.RED);
-		errorMsg.setTranslateX(3);
-		errorMsg.setTranslateY(115);
-		errorMsg.setVisible(false);
-		
-		//Back button
-		Button backBtn = new Button("Back");
-		backBtn.setTranslateX(3);
-		backBtn.setTranslateY(134);
-					
-		backBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				t.setRoot(viewLandlordAcc(t)); //Takes 
-			}
-		});
-		
-		Button enterBtn = new Button("Enter");
-		enterBtn.setTranslateX(353);
-		enterBtn.setTranslateY(134);
-		
-		enterBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				String newEmail = newLLEmailTxtF.getText();
-				String reEnterdNewEmail = reEnterEmailTxtF.getText();
-				
-				if(newEmail.matches(reEnterdNewEmail) && newEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$") ) {
-					landlord.updateLandlordEmail(newEmail);
-					landlord.setEmail(newEmail);
-					errorMsg.setText("Email has been updated.");
-					errorMsg.setVisible(true);
-				}else{
-					errorMsg.setText("The email is invalid or does not match. Please Try Again.");
-					errorMsg.setVisible(true);
-				}
-			}
-		});
-		
-		Pane chgLandlordEmailPane = new Pane();
-		
-		chgLandlordEmailPane.getChildren().addAll(titleLbl,line,newLLEmailLbl,newLLEmailTxtF,reEnterEmailLbl,reEnterEmailTxtF,enterBtn,backBtn,errorMsg);
-		return chgLandlordEmailPane;
-		
-	}
 	
-	public Pane chgLandlordPassword(Scene t) {
-		t.getWindow().setHeight(200);
-		
-		Label titleLbl = new Label("Change Password");
-		titleLbl.setFont(titleFont);
-		titleLbl.setTranslateX(3);
-			
-		Line line = new Line();
-		line.setStartX(0); 
-		line.setEndX(400); 
-		line.setStartY(30);
-		line.setEndY(30);
-		line.setSmooth(true);
-		line.setStroke(Color.RED);
-		line.setStrokeWidth(5);	
-		
-		Label newLLPasswrdLbl = new Label("Enter New Pasword:");
-		newLLPasswrdLbl.setTranslateX(3);
-		newLLPasswrdLbl.setTranslateY(38);
-		newLLPasswrdLbl.setFont(btnFont);
-		
-		TextField newLLPasswrdTxtF = new TextField();
-		newLLPasswrdTxtF.setTranslateX(192);
-		newLLPasswrdTxtF.setTranslateY(38);
-		
-		Label reEnterPasswrdLbl = new Label("Re-Enter Password: ");
-		reEnterPasswrdLbl.setTranslateX(3);
-		reEnterPasswrdLbl.setTranslateY(71);
-		reEnterPasswrdLbl.setFont(btnFont);
-		
-		TextField reEnterPasswrdTxtF = new TextField();
-		reEnterPasswrdTxtF.setTranslateX(185);
-		reEnterPasswrdTxtF.setTranslateY(71);
-		
-		Text errorMsg = new Text("You Suck");
-		errorMsg.setFill(Color.RED);
-		errorMsg.setTranslateX(3);
-		errorMsg.setTranslateY(115);
-		errorMsg.setVisible(false);
-		
-		//Back button
-		Button backBtn = new Button("Back");
-		backBtn.setTranslateX(3);
-		backBtn.setTranslateY(134);
-					
-		backBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				t.setRoot(viewLandlordAcc(t)); //Takes 
-			}
-		});
-		
-		Button enterBtn = new Button("Enter");
-		enterBtn.setTranslateX(353);
-		enterBtn.setTranslateY(134);
-		
-		enterBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				String newPasswrd = newLLPasswrdTxtF.getText();
-				String reEnterdNewPasswrd = reEnterPasswrdTxtF.getText();
-				
-				try {
-					if(newPasswrd.matches(reEnterdNewPasswrd) && newPasswrd.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{7,}$")) {
-						landlord.updateLandlordPasswrd(newPasswrd);
-						landlord.setPassword(newPasswrd);
-						errorMsg.setText("Pasword has been updated.");
-						errorMsg.setVisible(true);
-					}else{
-						errorMsg.setText("The password is invalid or does not match. Please Try Again.");
-						errorMsg.setVisible(true);
-					}
-				}catch(Exception e) {
-					errorMsg.setText("Password must include at least one uppercase, lowercase and special character");
-					errorMsg.setVisible(true);
-				}
-			}
-		});
-		
-		Pane chgLandlordEmailPane = new Pane();
-		
-		chgLandlordEmailPane.getChildren().addAll(titleLbl,line,newLLPasswrdLbl,newLLPasswrdTxtF,reEnterPasswrdLbl,reEnterPasswrdTxtF,enterBtn,backBtn,errorMsg);
-		return chgLandlordEmailPane;
-		
-	}
 	
-	public Pane chgLandlordPhone(Scene t) {
-		t.getWindow().setHeight(200);
-		
-		Label titleLbl = new Label("Change Phone Number");
-		titleLbl.setFont(titleFont);
-		titleLbl.setTranslateX(3);
-			
-		Line line = new Line();
-		line.setStartX(0); 
-		line.setEndX(400); 
-		line.setStartY(30);
-		line.setEndY(30);
-		line.setSmooth(true);
-		line.setStroke(Color.RED);
-		line.setStrokeWidth(5);	
-		
-		Label newLLPhoneLbl = new Label("Enter New Number:");
-		newLLPhoneLbl.setTranslateX(3);
-		newLLPhoneLbl.setTranslateY(38);
-		newLLPhoneLbl.setFont(btnFont);
-		
-		TextField newLLPhoneTxtF = new TextField();
-		newLLPhoneTxtF.setTranslateX(192);
-		newLLPhoneTxtF.setTranslateY(38);
-		
-		Label reEnterPhoneLbl = new Label("Re-Enter Number: ");
-		reEnterPhoneLbl.setTranslateX(3);
-		reEnterPhoneLbl.setTranslateY(71);
-		reEnterPhoneLbl.setFont(btnFont);
-		
-		TextField reEnterPhoneTxtF = new TextField();
-		reEnterPhoneTxtF.setTranslateX(185);
-		reEnterPhoneTxtF.setTranslateY(71);
-		
-		Text errorMsg = new Text("You Suck");
-		errorMsg.setFill(Color.RED);
-		errorMsg.setTranslateX(3);
-		errorMsg.setTranslateY(115);
-		errorMsg.setVisible(false);
-		
-		//Back button
-		Button backBtn = new Button("Back");
-		backBtn.setTranslateX(3);
-		backBtn.setTranslateY(134);
-					
-		backBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				t.setRoot(viewLandlordAcc(t)); //Takes 
-			}
-		});
-		
-		Button enterBtn = new Button("Enter");
-		enterBtn.setTranslateX(353);
-		enterBtn.setTranslateY(134);
-		
-		enterBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				String newPhone = newLLPhoneTxtF.getText();
-				String reEnterdNewPhone = reEnterPhoneTxtF.getText();
-				
-				try {
-					if(newPhone.matches(reEnterdNewPhone) && newPhone.matches("^(\\+?\\d{1,3}[-.\\s]?)?(\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4})$")) {
-						landlord.updateLandlordPhone(newPhone);
-						landlord.setPhone(newPhone);
-						errorMsg.setText("Phone number has been updated.");
-						errorMsg.setVisible(true);
-					}else{
-						errorMsg.setText("The phone number is invalid or does not match. Please Try Again.");
-						errorMsg.setVisible(true);
-					}
-				}catch(Exception e) {
-
-				}
-			}
-		});
-		
-		Pane chgLandlordEmailPane = new Pane();
-		
-		chgLandlordEmailPane.getChildren().addAll(titleLbl,line,newLLPhoneLbl,newLLPhoneTxtF,reEnterPhoneLbl,reEnterPhoneTxtF,enterBtn,backBtn,errorMsg);
-		return chgLandlordEmailPane;
-		
-	}
+	
 	
 	//Where new tenants can create a new tenant account
 	public Pane newTenantAcc (Scene t) {
@@ -1439,6 +1196,10 @@ public class Property_FX extends Application{
 			@Override
 			public void handle(ActionEvent arg0) {
 				// TODO Auto-generated method stub
+				tenant.setName(null);
+				tenant.setEmail(null);
+				tenant.setPassword(null);
+				tenant.setPhone(null);
 				t.setRoot(login(t));
 			}
 		});
@@ -1469,9 +1230,104 @@ public class Property_FX extends Application{
 	}
 	
 	public Pane teanantAccInfo (Scene t) {
+		t.getWindow().setHeight(300);
+		t.getWindow().setWidth(412);
 		
+		Label titleLbl = new Label("Account Details");
+		titleLbl.setFont(titleFont);
+		titleLbl.setTranslateX(3);
+			
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);	
+		
+		//Shows tenant id
+		int tenantId = tenant.getTenantIdFromDB();
+		Label tenantIdLbl = new Label("Tenant ID: " + tenantId);
+		tenantIdLbl.setTranslateX(3);
+		tenantIdLbl.setTranslateY(38);
+		tenantIdLbl.setFont(btnFont);
+		
+		String name = tenant.getName();
+		Label nameLbl = new Label("Full Name: " + name);
+		nameLbl.setTranslateX(3);
+		nameLbl.setTranslateY(71);
+		nameLbl.setFont(btnFont);
+		
+		//Email field
+		String email = tenant.getEmail();
+		Label emailLbl = new Label("Email: " + email);
+		emailLbl.setTranslateX(3);
+		emailLbl.setTranslateY(104);
+		emailLbl.setFont(btnFont);
+		
+		Button chgEmailBtn = new Button("Change Email");
+		chgEmailBtn.setTranslateX(305);
+		chgEmailBtn.setTranslateY(104);
+		
+		chgEmailBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(chgUserEmail(t));
+			}
+		});
+		
+		//Password field
+		String password = tenant.getPassword();
+		Label passwordLbl = new Label("Password: " + password);
+		passwordLbl.setTranslateX(3);
+		passwordLbl.setTranslateY(137);
+		passwordLbl.setFont(btnFont);
+		
+		Button chgPasswrdBtn = new Button("Change Password");
+		chgPasswrdBtn.setTranslateX(283);
+		chgPasswrdBtn.setTranslateY(137);
+		
+		chgPasswrdBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(chgUserPassword(t));
+			}
+		});
+	
+		//Phone field
+		String phone = tenant.getPhone();
+		Label phoneLbl = new Label("Phone: " + phone);
+		phoneLbl.setTranslateX(3);
+		phoneLbl.setTranslateY(170);
+		phoneLbl.setFont(btnFont);
+		
+		Button chgPhoneBtn = new Button("Change Phone");
+		chgPhoneBtn.setTranslateX(300);
+		chgPhoneBtn.setTranslateY(170);
+		
+		chgPhoneBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(chgUserPhone(t));
+			}
+		});
+		
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(230);
+			
+		backBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				t.setRoot(tenantUI(t));
+			}
+		});
 		
 		Pane teanantAccInfoPane = new Pane();
+		
+		teanantAccInfoPane.getChildren().addAll(titleLbl,line,tenantIdLbl,nameLbl,emailLbl,chgEmailBtn,passwordLbl,chgPasswrdBtn,phoneLbl,chgPhoneBtn,backBtn);
 		return teanantAccInfoPane;
 	}
 	
@@ -1479,6 +1335,309 @@ public class Property_FX extends Application{
 		
 		Pane viewLeasePane = new Pane();
 		return viewLeasePane;
+	}
+	
+	public Pane chgUserEmail(Scene t) {
+		t.getWindow().setHeight(200);
+		
+		Label titleLbl = new Label("Change Email");
+		titleLbl.setFont(titleFont);
+		titleLbl.setTranslateX(3);
+			
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);	
+		
+		Label newLLEmailLbl = new Label("Enter New Email:");
+		newLLEmailLbl.setTranslateX(3);
+		newLLEmailLbl.setTranslateY(38);
+		newLLEmailLbl.setFont(btnFont);
+		
+		TextField newLLEmailTxtF = new TextField();
+		newLLEmailTxtF.setTranslateX(170);
+		newLLEmailTxtF.setTranslateY(38);
+		
+		Label reEnterEmailLbl = new Label("Re-Enter Email: ");
+		reEnterEmailLbl.setTranslateX(3);
+		reEnterEmailLbl.setTranslateY(71);
+		reEnterEmailLbl.setFont(btnFont);
+		
+		TextField reEnterEmailTxtF = new TextField();
+		reEnterEmailTxtF.setTranslateX(155);
+		reEnterEmailTxtF.setTranslateY(71);
+		
+		Text errorMsg = new Text("You Suck");
+		errorMsg.setFill(Color.RED);
+		errorMsg.setTranslateX(3);
+		errorMsg.setTranslateY(115);
+		errorMsg.setVisible(false);
+		
+		//Back button
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(134);
+					
+		backBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				if(landlord.getEmail() != null && tenant.getEmail() == null) {
+					t.setRoot(viewLandlordAcc(t));
+				}else if(landlord.getEmail() == null && tenant.getEmail()!= null) {
+					t.setRoot(teanantAccInfo(t));
+				}
+			}
+		});
+		
+		Button enterBtn = new Button("Enter");
+		enterBtn.setTranslateX(353);
+		enterBtn.setTranslateY(134);
+		
+		enterBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				String newEmail = newLLEmailTxtF.getText();
+				String reEnterdNewEmail = reEnterEmailTxtF.getText();
+				
+				if (tenant.getEmail() == null && landlord.getEmail() != null){
+					if(newEmail.matches(reEnterdNewEmail) && newEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$") ) {
+						landlord.updateLandlordEmail(newEmail);
+						landlord.setEmail(newEmail);
+						errorMsg.setText("Email has been updated.");
+						errorMsg.setVisible(true);
+					}else{
+						errorMsg.setText("The email is invalid or does not match. Please Try Again.");
+						errorMsg.setVisible(true);
+					}
+					
+				}else if(tenant.getEmail() != null && landlord.getEmail() == null) {
+					if(newEmail.matches(reEnterdNewEmail) && newEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$") ) {
+						tenant.updateTenantEmail(newEmail);
+						tenant.setEmail(newEmail);
+						errorMsg.setText("Email has been updated.");
+						errorMsg.setVisible(true);
+					}else{
+						errorMsg.setText("The email is invalid or does not match. Please Try Again.");
+						errorMsg.setVisible(true);
+					}
+				}
+			}
+		});
+		
+		Pane chgLandlordEmailPane = new Pane();
+		
+		chgLandlordEmailPane.getChildren().addAll(titleLbl,line,newLLEmailLbl,newLLEmailTxtF,reEnterEmailLbl,reEnterEmailTxtF,enterBtn,backBtn,errorMsg);
+		return chgLandlordEmailPane;
+		
+	}
+	
+	public Pane chgUserPassword(Scene t) {
+		t.getWindow().setHeight(200);
+		
+		Label titleLbl = new Label("Change Password");
+		titleLbl.setFont(titleFont);
+		titleLbl.setTranslateX(3);
+			
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);	
+		
+		Label newLLPasswrdLbl = new Label("Enter New Pasword:");
+		newLLPasswrdLbl.setTranslateX(3);
+		newLLPasswrdLbl.setTranslateY(38);
+		newLLPasswrdLbl.setFont(btnFont);
+		
+		TextField newLLPasswrdTxtF = new TextField();
+		newLLPasswrdTxtF.setTranslateX(192);
+		newLLPasswrdTxtF.setTranslateY(38);
+		
+		Label reEnterPasswrdLbl = new Label("Re-Enter Password: ");
+		reEnterPasswrdLbl.setTranslateX(3);
+		reEnterPasswrdLbl.setTranslateY(71);
+		reEnterPasswrdLbl.setFont(btnFont);
+		
+		TextField reEnterPasswrdTxtF = new TextField();
+		reEnterPasswrdTxtF.setTranslateX(185);
+		reEnterPasswrdTxtF.setTranslateY(71);
+		
+		Text errorMsg = new Text("You Suck");
+		errorMsg.setFill(Color.RED);
+		errorMsg.setTranslateX(3);
+		errorMsg.setTranslateY(115);
+		errorMsg.setVisible(false);
+		
+		//Back button
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(134);
+					
+		backBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				if(landlord.getPassword() != null && tenant.getPassword() == null) {
+					t.setRoot(viewLandlordAcc(t));
+				}else if(landlord.getPassword() == null && tenant.getPassword()!= null) {
+					t.setRoot(teanantAccInfo(t));
+				}
+			}
+		});
+		
+		Button enterBtn = new Button("Enter");
+		enterBtn.setTranslateX(353);
+		enterBtn.setTranslateY(134);
+		
+		enterBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				String newPasswrd = newLLPasswrdTxtF.getText();
+				String reEnterdNewPasswrd = reEnterPasswrdTxtF.getText();
+				
+				try {
+					if(landlord.getPassword() != null && tenant.getPassword() == null) {
+						if(newPasswrd.matches(reEnterdNewPasswrd) && newPasswrd.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{7,}$")) {
+							landlord.updateLandlordPasswrd(newPasswrd);
+							landlord.setPassword(newPasswrd);
+							errorMsg.setText("Pasword has been updated.");
+							errorMsg.setVisible(true);
+						}else{
+							errorMsg.setText("The password is invalid or does not match. Please Try Again.");
+							errorMsg.setVisible(true);
+						}
+						
+					}else if(landlord.getPassword() == null && tenant.getPassword()!= null) {
+						if(newPasswrd.matches(reEnterdNewPasswrd) && newPasswrd.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{7,}$")) {
+							tenant.updateTenantPasswrd(newPasswrd);
+							tenant.setPassword(newPasswrd);
+							errorMsg.setText("Pasword has been updated.");
+							errorMsg.setVisible(true);
+						}else{
+							errorMsg.setText("The password is invalid or does not match. Please Try Again.");
+							errorMsg.setVisible(true);
+						}
+						
+					}
+				}catch(Exception e) {
+					errorMsg.setText("Password must include at least one uppercase, lowercase and special character");
+					errorMsg.setVisible(true);
+				}
+			}
+		});
+		
+		Pane chgUserPasswordPane = new Pane();
+		
+		chgUserPasswordPane.getChildren().addAll(titleLbl,line,newLLPasswrdLbl,newLLPasswrdTxtF,reEnterPasswrdLbl,reEnterPasswrdTxtF,enterBtn,backBtn,errorMsg);
+		return chgUserPasswordPane;
+		
+	}
+	
+	public Pane chgUserPhone(Scene t) {
+		t.getWindow().setHeight(200);
+		
+		Label titleLbl = new Label("Change Phone Number");
+		titleLbl.setFont(titleFont);
+		titleLbl.setTranslateX(3);
+			
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);	
+		
+		Label newLLPhoneLbl = new Label("Enter New Number:");
+		newLLPhoneLbl.setTranslateX(3);
+		newLLPhoneLbl.setTranslateY(38);
+		newLLPhoneLbl.setFont(btnFont);
+		
+		TextField newLLPhoneTxtF = new TextField();
+		newLLPhoneTxtF.setTranslateX(192);
+		newLLPhoneTxtF.setTranslateY(38);
+		
+		Label reEnterPhoneLbl = new Label("Re-Enter Number: ");
+		reEnterPhoneLbl.setTranslateX(3);
+		reEnterPhoneLbl.setTranslateY(71);
+		reEnterPhoneLbl.setFont(btnFont);
+		
+		TextField reEnterPhoneTxtF = new TextField();
+		reEnterPhoneTxtF.setTranslateX(185);
+		reEnterPhoneTxtF.setTranslateY(71);
+		
+		Text errorMsg = new Text("You Suck");
+		errorMsg.setFill(Color.RED);
+		errorMsg.setTranslateX(3);
+		errorMsg.setTranslateY(115);
+		errorMsg.setVisible(false);
+		
+		//Back button
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(134);
+					
+		backBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				if(landlord.getPassword() != null && tenant.getPassword() == null) {
+					t.setRoot(viewLandlordAcc(t));
+				}else if(landlord.getPassword() == null && tenant.getPassword()!= null) {
+					t.setRoot(teanantAccInfo(t));
+				}
+			}
+		});
+		
+		Button enterBtn = new Button("Enter");
+		enterBtn.setTranslateX(353);
+		enterBtn.setTranslateY(134);
+		
+		enterBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				String newPhone = newLLPhoneTxtF.getText();
+				String reEnterdNewPhone = reEnterPhoneTxtF.getText();
+				
+				try {
+					if(landlord.getPassword() != null && tenant.getPassword() == null) {
+						if(newPhone.matches(reEnterdNewPhone) && newPhone.matches("^(\\+?\\d{1,3}[-.\\s]?)?(\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4})$")) {
+							landlord.updateLandlordPhone(newPhone);
+							landlord.setPhone(newPhone);
+							errorMsg.setText("Phone number has been updated.");
+							errorMsg.setVisible(true);
+						}else{
+							errorMsg.setText("The phone number is invalid or does not match. Please Try Again.");
+							errorMsg.setVisible(true);
+						}
+					}else if(landlord.getPassword() == null && tenant.getPassword()!= null) {
+						if(newPhone.matches(reEnterdNewPhone) && newPhone.matches("^(\\+?\\d{1,3}[-.\\s]?)?(\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4})$")) {
+							tenant.updateTenantPhone(newPhone);
+							tenant.setPhone(newPhone);
+							errorMsg.setText("Phone number has been updated.");
+							errorMsg.setVisible(true);
+						}else{
+							errorMsg.setText("The phone number is invalid or does not match. Please Try Again.");
+							errorMsg.setVisible(true);
+						}
+					}
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		Pane chgUserPhonePane = new Pane();
+		
+		chgUserPhonePane.getChildren().addAll(titleLbl,line,newLLPhoneLbl,newLLPhoneTxtF,reEnterPhoneLbl,reEnterPhoneTxtF,enterBtn,backBtn,errorMsg);
+		return chgUserPhonePane;
+		
 	}
 
 }

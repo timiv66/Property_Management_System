@@ -202,6 +202,63 @@ public class Tenant {
 		
 	}
 	
+	public void updateTenantEmail(String newEmail) {
+		int tenantId = getTenantIdFromDB();
+		
+		Connection conn = null;
+		Statement updateTenantEmailStmt = null;
+
+		String updateTenantEmailSQL = "UPDATE tenants SET email = '" + newEmail + "' WHERE tenant_ID = " + tenantId;
+	
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			updateTenantEmailStmt = conn.createStatement();
+			updateTenantEmailStmt.execute(updateTenantEmailSQL);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateTenantPasswrd(String newPasswrd) {
+		int tenantId = getTenantIdFromDB();
+		
+		Connection conn = null;
+		Statement updateTenantPasswrdStmt = null;
+
+		String updateTenantPasswrdSQL = "UPDATE tenants SET passwrd = '" + newPasswrd + "' WHERE tenant_ID = " + tenantId;
+	
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			updateTenantPasswrdStmt = conn.createStatement();
+			updateTenantPasswrdStmt.execute(updateTenantPasswrdSQL);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateTenantPhone(String newPhone) {
+		int tenantId = getTenantIdFromDB();
+		
+		Connection conn = null;
+		Statement updateTenantPhoneStmt = null;
+
+		String updateTenantPhoneSQL = "UPDATE tenants SET phone = '" + newPhone + "' WHERE tenant_ID = " + tenantId;
+	
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			updateTenantPhoneStmt = conn.createStatement();
+			updateTenantPhoneStmt.execute(updateTenantPhoneSQL);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	//Checks if tenant user is in database
 	public boolean authenticateTenantUser(String inputedEmail, String inputedPassword) {
 		String dbEmail = null;
