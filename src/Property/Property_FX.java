@@ -17,6 +17,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
@@ -1332,9 +1333,99 @@ public class Property_FX extends Application{
 	}
 	
 	public Pane makeRequest(Scene t) {
+		t.getWindow().setHeight(300);
 		
+		Label titleLbl = new Label("Make Request");
+		titleLbl.setFont(titleFont);
+		titleLbl.setTranslateX(3);
+			
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);	
+		
+		Label requestLocLbl = new Label("Request Location:");
+		requestLocLbl.setTranslateX(3);
+		requestLocLbl.setTranslateY(38);
+		requestLocLbl.setFont(btnFont);
+		
+		ChoiceBox<String> requestLocCB = new ChoiceBox<String>();
+		requestLocCB.getItems().add("Bedroom");
+		requestLocCB.getItems().add("Bathroom");
+		requestLocCB.getItems().add("Kitchen");
+		requestLocCB.getItems().add("Laundry Room");
+		requestLocCB.getItems().add("Common Area");
+		requestLocCB.getItems().add("Unit Wide");
+		requestLocCB.setTranslateX(170);
+		requestLocCB.setTranslateY(38);
+		
+		Label requestCatLbl = new Label("Request Category:");
+		requestCatLbl.setTranslateX(3);
+		requestCatLbl.setTranslateY(71);
+		requestCatLbl.setFont(btnFont);
+		
+		ChoiceBox<String> requestCatCB = new ChoiceBox<String>();
+		requestCatCB.getItems().add("Air Conditioning/Heating");
+		requestCatCB.getItems().add("Appliances");
+		requestCatCB.getItems().add("Plumbing");
+		requestCatCB.getItems().add("Electrical");
+		requestCatCB.getItems().add("Flooring");
+		requestCatCB.getItems().add("Furniture");
+		requestCatCB.getItems().add("Pest Control");
+		requestCatCB.getItems().add("General");
+		requestCatCB.setTranslateX(170);
+		requestCatCB.setTranslateY(71);
+		
+		Label descripLbl = new Label("Description:");
+		descripLbl.setTranslateX(3);
+		descripLbl.setTranslateY(104);
+		descripLbl.setFont(btnFont);
+		
+		TextArea descripTxtF = new TextArea();
+		descripTxtF.setPrefWidth(200);
+		descripTxtF.setPrefHeight(50);
+		descripTxtF.setTranslateX(125);
+		descripTxtF.setTranslateY(104);
+		
+		Label dateCreatedLbl = new Label("Today's Date:");
+		dateCreatedLbl.setTranslateX(3);
+		dateCreatedLbl.setTranslateY(163);
+		dateCreatedLbl.setFont(btnFont);
+		
+		DatePicker dateTxtF = new DatePicker();
+		dateTxtF.setTranslateX(127);
+		dateTxtF.setTranslateY(163);
+		
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(233);
+			
+		backBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				t.setRoot(tenantUI(t));
+			}
+		});
+		
+		Button sendBtn = new Button("Send");
+		sendBtn.setTranslateX(350);
+		sendBtn.setTranslateY(231);
+		
+		sendBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+			}
+		});
 		
 		Pane makeRequestPane = new Pane();
+		
+		makeRequestPane.getChildren().addAll(titleLbl,line,requestLocLbl,requestLocCB,requestCatLbl,requestCatCB,descripLbl,descripTxtF,dateCreatedLbl,dateTxtF,backBtn,sendBtn);
 		return makeRequestPane;
 	}
 	
