@@ -1419,7 +1419,16 @@ public class Property_FX extends Application{
 		sendBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				// TODO Auto-generated method stub
+				String location = requestLocCB.getValue();
+				String category = requestCatCB.getValue();
+				String description = descripTxtF.getText();
+				
+				LocalDate starDateVal = dateTxtF.getValue();//Storing start date choice in String variable
+				String startDate = String.valueOf(starDateVal);
+				
+				Requests request = new Requests();
+				
+				request.addRequestToDB(tenant, lease, location, description, category, startDate);
 			}
 		});
 		

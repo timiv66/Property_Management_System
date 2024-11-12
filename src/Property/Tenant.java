@@ -101,6 +101,7 @@ public class Tenant {
 		return tenantId;
 	}
 	
+	
 	//Gets tenant user name from database
 	public String getTenantNameFromDB() {
 		int tenantId = getTenantIdFromDB();
