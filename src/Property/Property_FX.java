@@ -1103,6 +1103,7 @@ public class Property_FX extends Application{
 	//Home page for tenant users
 	public Pane tenantUI(Scene t) {	
 		t.getWindow().setHeight(410);
+		t.getWindow().setWidth(410);
 		
 		Label titleLbl = new Label("Tenant Home Page");
 		titleLbl.setFont(titleFont);
@@ -1255,17 +1256,72 @@ public class Property_FX extends Application{
 		apartRBtn.setTranslateX(570);
 		apartRBtn.setTranslateY(43);
 		
-		Button searchBtn = new Button("Search");
-		searchBtn.setTranslateX(3);
-		searchBtn.setTranslateY(83);
-		
 		Text resultTxt = new Text("");
 		resultTxt.setTranslateX(3);
 		resultTxt.setTranslateY(130);
 		
+		Button searchBtn = new Button("Search");
+		searchBtn.setTranslateX(3);
+		searchBtn.setTranslateY(83);
+		
+		searchBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				//Tenants search landlords in database
+				if(landlordRBtn.isSelected() ) {
+					if(searchTxtF.getText().matches("")) { //What happens when search box is empty 
+						resultTxt.setText("Nothing in search box");
+					}else { //When search query is successful
+						String searchTxt = searchTxtF.getText();
+						List<String> landlordList = tenant.searchLandlords(searchTxt);
+						
+						for (String i : landlordList) {
+							resultTxt.setText(i);
+						}
+						
+						if(landlordList.isEmpty()) {// What happens when there are no matches from search query
+							resultTxt.setText("No matches ");
+						}
+					}
+				//Tenants search apartments in database	
+				}else if(apartRBtn.isSelected()) {
+					if(searchTxtF.getText().matches("")) {//What happens when search box is empty
+						resultTxt.setText("Nothing in search box");
+					}else {//When search query is successful
+						String searchTxt = searchTxtF.getText();
+						List<String> apartmentList = tenant.searchApartments(searchTxt);
+						for (String a : apartmentList) {
+							resultTxt.setText(a);
+						}
+					
+						if(apartmentList.isEmpty()) {// What happens when there are no matches from search query
+							resultTxt.setText("No matches");
+							
+							
+						}
+					}
+				//User needs to either select landlord or apartment button
+				}else if(!landlordRBtn.isSelected() && !apartRBtn.isSelected()) {
+					resultTxt.setText("Please choose either the landlord or apartment button");
+				}
+			}
+		});
+		
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(163);
+		
+		backBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(tenantUI(t));
+			}
+		});
+		
+		
 		Pane tenantSearchPane = new Pane();
 		
-		tenantSearchPane.getChildren().addAll(titleLbl,line,searchImg,searchLbl,searchTxtF,landlordRBtn,apartRBtn,searchBtn,resultTxt);
+		tenantSearchPane.getChildren().addAll(titleLbl,line,searchImg,searchLbl,searchTxtF,landlordRBtn,apartRBtn,searchBtn,resultTxt,backBtn);
 		return tenantSearchPane;
 	}
 	
