@@ -37,6 +37,7 @@ public class Property_FX extends Application{
 	Landlord landlord = new Landlord();
 	Apartment apartment = new Apartment();
 	Lease lease = new Lease();
+	Requests requests = new Requests();
 	
 	Font titleFont = new Font("Stencil",25);
 	Font btnFont = new Font("Elephant",18);
@@ -672,18 +673,9 @@ public class Property_FX extends Application{
 	
 	//Landlords can view requests sent by tenants
 	public Pane viewRequests(Scene t) {
-			
-			
-		Pane viewRequestsPane = new Pane();
-		return viewRequestsPane;
-	}
-	
-	//Landlords can edit their apartment info
-	public Pane editApartments(Scene t) {
+		t.getWindow().setHeight(120);
 		
-		t.getWindow().setHeight(320);
-		
-		Label titleLbl = new Label("Edit Apartment Complex");
+		Label titleLbl = new Label("View Requests");
 		titleLbl.setFont(titleFont);
 		titleLbl.setTranslateX(3);
 		
@@ -696,42 +688,178 @@ public class Property_FX extends Application{
 		line.setStroke(Color.RED);
 		line.setStrokeWidth(5);		
 		
-		//Apartment name field
-		Label apartNameLbl = new Label("Apartment Name: ");
-		apartNameLbl.setTranslateX(3);
-		apartNameLbl.setTranslateY(38);
-		apartNameLbl.setFont(btnFont);
+		Label requestLbl = new Label("Choose Request:");
+		requestLbl.setTranslateX(3);
+		requestLbl.setTranslateY(38);
+		requestLbl.setFont(btnFont);
 		
-		ChoiceBox<String> apartNameCB = new ChoiceBox<String>();
-		apartNameCB.setTranslateX(170);
-		apartNameCB.setTranslateY(38);
-		List<String> apartNameList = landlord.getAllApartmentNames();
 		
-		//Adds all apartment names that a logged in landlord owns
+		List<String> requestIdList = new ArrayList<String>();
+		requestIdList = landlord.getAllRequestID();
+		
+		
+		ChoiceBox<String> requestIdCB = new ChoiceBox<String>();
+		requestIdCB.setTranslateX(157);
+		requestIdCB.setTranslateY(38);
+		
+		//Adds all requestId's from array list to choice box
 		int i = 0;
-		while(i < apartNameList.size()) {
-			apartNameCB.getItems().add(apartNameList.get(i));
+		while(i < requestIdList.size()) {
+			requestIdCB.getItems().add(requestIdList.get(i));
 			i++;
 		}
 		
-		Button editBtn = new Button("Edit");
-		editBtn.setTranslateX(290);
-		editBtn.setTranslateY(38);
+		Text errorMsg = new Text("");
+		errorMsg.setVisible(false);
+		errorMsg.setTranslateX(3);
+		errorMsg.setTranslateY(75);
 		
-		//Email field
-		Label emailLbl = new Label("Email: ");
-		emailLbl.setTranslateX(3);
-		emailLbl.setTranslateY(71);
-		emailLbl.setFont(btnFont);
-				
-		TextField emailTxtF = new TextField();
-		emailTxtF.setTranslateX(70);
-		emailTxtF.setTranslateY(71);
-				
-		Pane editApartmentsPane = new Pane();
+		//Name of tenant who made the request
+		Label tenantNameLbl = new Label();
+		tenantNameLbl.setTranslateX(3);
+		tenantNameLbl.setTranslateY(77);
+		tenantNameLbl.setFont(btnFont);
+		tenantNameLbl.setVisible(false);
 		
-		editApartmentsPane.getChildren().addAll(titleLbl,line,apartNameLbl,apartNameCB,editBtn);
-		return editApartmentsPane;
+		//Name of the apartment for the request
+		Label apartNameLbl = new Label();
+		apartNameLbl.setTranslateX(3);
+		apartNameLbl.setTranslateY(110);
+		apartNameLbl.setFont(btnFont);
+		apartNameLbl.setVisible(false);
+		
+		//Location of request in apartment
+		Label requestLocLbl = new Label();
+		requestLocLbl.setTranslateX(3);
+		requestLocLbl.setTranslateY(143);
+		requestLocLbl.setFont(btnFont);
+		requestLocLbl.setVisible(false);
+		
+		//Description of request
+		Label requestDesLbl = new Label();
+		requestDesLbl.setTranslateX(3);
+		requestDesLbl.setTranslateY(176);
+		requestDesLbl.setFont(btnFont);
+		requestDesLbl.setVisible(false);
+		
+		//Date Request was created
+		Label requestDateLbl = new Label();
+		requestDateLbl.setTranslateX(3);
+		requestDateLbl.setTranslateY(209);
+		requestDateLbl.setFont(btnFont);
+		requestDateLbl.setVisible(false);
+		
+		//Status of request
+		Label requestStatLbl = new Label();
+		requestStatLbl.setTranslateX(3);
+		requestStatLbl.setTranslateY(242);
+		requestStatLbl.setFont(btnFont);
+		requestStatLbl.setVisible(false);
+		
+		ChoiceBox<String> statusCB = new ChoiceBox<String>();
+		statusCB.getItems().add("Incomplete");
+		statusCB.getItems().add("In Progress");
+		statusCB.getItems().add("Complete");
+		statusCB.setTranslateX(180);
+		statusCB.setTranslateY(242);
+		
+		Button setStatBtn = new Button("Set Status");
+		setStatBtn.setTranslateX(285);
+		setStatBtn.setTranslateY(242);
+		
+		Text statusErrorMsg = new Text();
+		statusErrorMsg.setTranslateX(3);
+		statusErrorMsg.setTranslateY(278);
+		statusErrorMsg.setVisible(false);
+		
+		//Button to view the info of specific request
+		Button viewRequestBtn = new Button("View Request");
+		viewRequestBtn.setTranslateX(235);
+		viewRequestBtn.setTranslateY(38);	
+		
+		viewRequestBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				if (requestIdCB.getValue() == null) {
+					errorMsg.setVisible(true);
+					errorMsg.setText("Please select an Request ID");
+				}else {
+					errorMsg.setVisible(false);
+					t.getWindow().setHeight(320);
+					
+					String requestId = requestIdCB.getValue();
+					
+					//Getting the name of the tenant who made the request
+					String tenantName = requests.getTenantNameFromRequests(requestId);
+					tenantNameLbl.setText("Tenant Name: " + tenantName);
+					tenantNameLbl.setVisible(true);
+					
+					//Getting the name of the apartment for the request
+					String apartName = requests.getApartNameFromRequests(requestId);
+					apartNameLbl.setText("Apartment Name: " + apartName);
+					apartNameLbl.setVisible(true);
+					
+					//Getting request location 
+					String requestLoc = requests.getLocationFromRequests(requestId);
+					requestLocLbl.setText("Location: " + requestLoc);
+					requestLocLbl.setVisible(true);
+					
+					//Getting request description
+					String requestDescript = requests.getDescriptionFromRequests(requestId);
+					requestDesLbl.setText("Description: " + requestDescript);
+					requestDesLbl.setVisible(true);
+					
+					//Getting request status
+					String requestStatus = requests.getStatusFromRequests(requestId);
+					requestStatLbl.setText("Status: " + requestStatus);
+					requestStatLbl.setVisible(true);
+					
+					//Getting request start date
+					String requestStartDate = requests.getStartDateForRequest(requestId);
+					requestDateLbl.setText("Date Created: " + requestStartDate);
+					requestDateLbl.setVisible(true);
+				}
+				
+			}
+		});
+		
+		setStatBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				String requestId = requestIdCB.getValue();
+				String status = statusCB.getValue();
+				
+				if(statusCB.getValue() == null) {
+					statusErrorMsg.setText("Please select a status from the choicebox");
+					statusErrorMsg.setVisible(true);
+				}else {
+					if(status.matches(requests.getStatusFromRequests(requestId))) {
+						statusErrorMsg.setText("Please choose a different status");
+						statusErrorMsg.setVisible(true);
+					}else {
+						statusErrorMsg.setVisible(false);
+						requests.updateStatusForRequest(requestId, status);
+						requestStatLbl.setText("Status: " + status);
+					}
+				}
+			}
+		});
+		
+		Button backtBtn = new Button("Back");
+		backtBtn.setTranslateX(350);
+		backtBtn.setTranslateY(38);	
+		
+		backtBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(landlordUI(t));
+			}
+		});
+		
+		Pane viewRequestsPane = new Pane();
+		
+		viewRequestsPane.getChildren().addAll(titleLbl,line,requestLbl,requestIdCB,viewRequestBtn,errorMsg,backtBtn,tenantNameLbl,apartNameLbl,requestLocLbl,requestDesLbl,requestDateLbl,requestStatLbl,statusCB,setStatBtn,statusErrorMsg);
+		return viewRequestsPane;
 	}
 	
 	//Landlords can view and update account info
@@ -1134,17 +1262,17 @@ public class Property_FX extends Application{
 		});
 					
 		
-		Button chgApartBtn = new Button("Change Apartments");
-		chgApartBtn.setTranslateX(115);
-		chgApartBtn.setTranslateY(100);
-		chgApartBtn.setPrefHeight(50);
-		chgApartBtn.setPrefWidth(170);
-		chgApartBtn.setFont(new Font("Elephant",14));
+		Button activeRequestsBtn = new Button("Active Requests");
+		activeRequestsBtn.setTranslateX(115);
+		activeRequestsBtn.setTranslateY(100);
+		activeRequestsBtn.setPrefHeight(50);
+		activeRequestsBtn.setPrefWidth(170);
+		activeRequestsBtn.setFont(new Font("Elephant",14));
 					
-		chgApartBtn.setOnAction(new EventHandler<ActionEvent>() {
+		activeRequestsBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				t.setRoot(chgApartment(t)); 
+				t.setRoot(activeRequests(t)); 
 			}
 		});
 					
@@ -1208,7 +1336,7 @@ public class Property_FX extends Application{
 		
 		Pane tenantUiPane = new Pane();
 		
-		tenantUiPane.getChildren().addAll(titleLbl,line,searchBtn,chgApartBtn,requestsBtn,accBtn,leaseBtn,logOutBtn);
+		tenantUiPane.getChildren().addAll(titleLbl,line,searchBtn,activeRequestsBtn,requestsBtn,accBtn,leaseBtn,logOutBtn);
 		return tenantUiPane;
 	}
 	
@@ -1326,10 +1454,10 @@ public class Property_FX extends Application{
 		return tenantSearchPane;
 	}
 	
-	public Pane chgApartment(Scene t) {
+	public Pane activeRequests(Scene t) {
 		
-		Pane chgApartmentPane = new Pane();
-		return chgApartmentPane;
+		Pane activeRequestsPane = new Pane();
+		return activeRequestsPane;
 	}
 	
 	public Pane makeRequest(Scene t) {
@@ -1400,6 +1528,11 @@ public class Property_FX extends Application{
 		dateTxtF.setTranslateX(127);
 		dateTxtF.setTranslateY(163);
 		
+		Text conformationTxt = new Text();
+		conformationTxt.setTranslateX(3);
+		conformationTxt.setTranslateY(220);
+		conformationTxt.setVisible(false);
+		
 		Button backBtn = new Button("Back");
 		backBtn.setTranslateX(3);
 		backBtn.setTranslateY(233);
@@ -1426,15 +1559,22 @@ public class Property_FX extends Application{
 				LocalDate starDateVal = dateTxtF.getValue();//Storing start date choice in String variable
 				String startDate = String.valueOf(starDateVal);
 				
-				Requests request = new Requests();
+				boolean result = requests.addRequestToDB(tenant, lease, location, description, category, startDate);
 				
-				request.addRequestToDB(tenant, lease, location, description, category, startDate);
+				if (result = true) {
+					conformationTxt.setVisible(true);
+					conformationTxt.setText("Your request has been sent");
+				}else if(result = false) {
+					conformationTxt.setVisible(true);
+					conformationTxt.setText("Your request has not been sent");
+
+				}
 			}
 		});
 		
 		Pane makeRequestPane = new Pane();
 		
-		makeRequestPane.getChildren().addAll(titleLbl,line,requestLocLbl,requestLocCB,requestCatLbl,requestCatCB,descripLbl,descripTxtF,dateCreatedLbl,dateTxtF,backBtn,sendBtn);
+		makeRequestPane.getChildren().addAll(titleLbl,line,requestLocLbl,requestLocCB,requestCatLbl,requestCatCB,descripLbl,descripTxtF,dateCreatedLbl,dateTxtF,backBtn,sendBtn,conformationTxt);
 		return makeRequestPane;
 	}
 	

@@ -482,8 +482,34 @@ public class Landlord {
 			e.printStackTrace();
 		}
 		
-		
 		return list;
+	}
+	
+	public List<String> getAllRequestID() {
+		List<String> list = new ArrayList<String>();
+		int landlordId = getLandlordIdFromDB();
+		
+		Connection conn = null;
+		Statement requestsStmt = null;
+		
+		String requestsSQL = "SELECT request_ID FROM requests WHERE landlord_ID = " + landlordId;
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			requestsStmt = conn.createStatement();
+			ResultSet requestsRS = requestsStmt.executeQuery(requestsSQL);
+			
+			while(requestsRS.next()) {
+				String a = requestsRS.getString("request_ID");
+				list.add(a);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
+		
 	}
 	
 }
