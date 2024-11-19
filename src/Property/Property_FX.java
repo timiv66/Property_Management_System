@@ -1,13 +1,8 @@
 package Property;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
-
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -241,6 +236,9 @@ public class Property_FX extends Application{
 		line.setStrokeWidth(5);
 		
 		Text errorMsg = new Text("");
+		errorMsg.setVisible(false);
+		errorMsg.setTranslateX(3);
+		errorMsg.setTranslateY(230);
 		
 		//Name field
 		Label nameLbl = new Label("Name: ");
@@ -282,6 +280,7 @@ public class Property_FX extends Application{
 		phoneTxtF.setTranslateX(70);
 		phoneTxtF.setTranslateY(137);
 		
+		
 		//Button that will create new landlord account
 		Button createLandlordAccBtn = new Button("Create Account");
 		createLandlordAccBtn.setTranslateX(90);
@@ -290,27 +289,34 @@ public class Property_FX extends Application{
 		createLandlordAccBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				//Inputed information from users
-				String inputedName = nameTxtF.getText();
-				String inputedEmail = emailTxtF.getText();
-				String inputedPassword = passwordTxtF.getText();
-				String inputedPhone = phoneTxtF.getText();
 				
-				//Checking in user inputed information is written correctly
-				if(inputedName.matches("^[A-Z][a-z]+ [A-Z][a-z]+$") && inputedEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
-						&& inputedPassword.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{7,}$") && inputedPhone.matches("^(\\+?\\d{1,3}[-.\\s]?)?(\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4})$")) {
-					landlord.insertLandlordToDB(inputedName, inputedEmail, inputedPassword, inputedPhone); //Adds new landlord user to database
-					
-					//Setting landlord object values to inputed information
-					landlord.setName(inputedName);
-					landlord.setEmail(inputedEmail);
-					landlord.setPassword(inputedPassword);
-					landlord.setPhone(inputedPhone);
-					
-					t.setRoot(landlordRegApart(t));
-				//Display error message if format is wrong	
-				}else {
+				if(nameTxtF.getText().isEmpty() || emailTxtF.getText().isEmpty() || passwordTxtF.getText().isEmpty() || phoneTxtF.getText().isEmpty()) {
 					errorMsg.setVisible(true);
+					errorMsg.setText("Please input all information");
+				}else {
+					String inputedName = nameTxtF.getText();
+					String inputedEmail = emailTxtF.getText();
+					String inputedPassword = passwordTxtF.getText();
+					String inputedPhone = phoneTxtF.getText();
+					
+					//Checking in user inputed information is written correctly
+					if(inputedName.matches("^[A-Z][a-z]+ [A-Z][a-z]+$") && inputedEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
+							&& inputedPassword.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{7,}$") && inputedPhone.matches("^(\\+?\\d{1,3}[-.\\s]?)?(\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4})$")) {
+						landlord.insertLandlordToDB(inputedName, inputedEmail, inputedPassword, inputedPhone); //Adds new landlord user to database
+						
+						//Setting landlord object values to inputed information
+						landlord.setName(inputedName);
+						landlord.setEmail(inputedEmail);
+						landlord.setPassword(inputedPassword);
+						landlord.setPhone(inputedPhone);
+						
+						t.setRoot(landlordRegApart(t));
+					//Display error message if format is wrong	
+					}else {
+						errorMsg.setVisible(true);
+						errorMsg.setText("Please make sure that all information is correctly formatted");
+						
+					}
 				}
 			}
 		});
@@ -333,7 +339,7 @@ public class Property_FX extends Application{
 		Background background = new Background(background_fill);
 		newLandlordAccPane.setBackground(background);
 		
-		newLandlordAccPane.getChildren().addAll(titleLbl,line,nameLbl,nameTxtF,emailLbl,emailTxtF,passwordLbl,passwordTxtF,phoneLbl,phoneTxtF,createLandlordAccBtn,backBtn);
+		newLandlordAccPane.getChildren().addAll(titleLbl,line,nameLbl,nameTxtF,emailLbl,emailTxtF,passwordLbl,passwordTxtF,phoneLbl,phoneTxtF,createLandlordAccBtn,backBtn,errorMsg);
 		
 		return newLandlordAccPane;
 	}//register
@@ -1206,8 +1212,8 @@ public class Property_FX extends Application{
 		dateTxtF.setTranslateY(137);
 		
 		//Error message
-		Text errorMsg = new Text("Please press the get rent button");
-		errorMsg.setX(100);
+		Text errorMsg = new Text("");
+		errorMsg.setX(3);
 		errorMsg.setY(190);
 		errorMsg.setVisible(false);
 		
@@ -1220,28 +1226,37 @@ public class Property_FX extends Application{
 			@Override
 			public void handle(ActionEvent arg0) {
 				if(rentCB.getValue() == 0 || rentCB.getValue() == null) { //If rent value is null it will display error message
+					errorMsg.setText("Please press the get rent button");
 					errorMsg.setVisible(true);
-				}else {
-					String apartmentName = apartNameCB.getValue();//Storing apartment name choice in string variable and stores it in apartment object
-					apartment.setName(apartmentName);
+				}
+				
+				else {
+					if(apartment.numOfTenantsFromDB(apartNameCB.getValue()) >= apartment.maxNumOfTenantsFromDB(apartNameCB.getValue())) {
+						errorMsg.setText("This apartment is at full capacity. Please choose another one");
+						errorMsg.setVisible(true);
+					}else {
+						String apartmentName = apartNameCB.getValue();//Storing apartment name choice in string variable and stores it in apartment object
+						apartment.setName(apartmentName);
+						
+						int leaseLength = leaseLengthCB.getValue();//Storing lease length choice in integer variable
+						int rent = rentCB.getValue();
+						
+						LocalDate starDateVal = dateTxtF.getValue();//Storing start date choice in String variable
+						String startDate = String.valueOf(starDateVal);
+						
+						LocalDate endDateVal = dateTxtF.getValue().plusYears(leaseLength);//Storing end date choice in String variable
+						String endDate = String.valueOf(endDateVal);
+						
+						lease.createLease(tenant, apartment, apartmentName, leaseLength, rent, startDate, endDate);//Adds new lease to database
+						
+						tenant.updateLandlordIdForTenant(lease, tenant);//Updates tenants's landlord
+						tenant.updateNumOfTenantsForLandandlord(lease, tenant);//Updates amount of tenants a landlord has
+						
+						apartment.updateNumOfTenantsForApartment();//Update numbers of tenants for apartments
+						
+						t.setRoot(tenantUI(t));//Takes tenant user to tenant home page
+					}
 					
-					int leaseLength = leaseLengthCB.getValue();//Storing lease length choice in integer variable
-					int rent = rentCB.getValue();
-					
-					LocalDate starDateVal = dateTxtF.getValue();//Storing start date choice in String variable
-					String startDate = String.valueOf(starDateVal);
-					
-					LocalDate endDateVal = dateTxtF.getValue().plusYears(leaseLength);//Storing end date choice in String variable
-					String endDate = String.valueOf(endDateVal);
-					
-					lease.createLease(tenant, apartment, apartmentName, leaseLength, rent, startDate, endDate);//Adds new lease to database
-					
-					tenant.updateLandlordIdForTenant(lease, tenant);//Updates tenants's landlord
-					tenant.updateNumOfTenantsForLandandlord(lease, tenant);//Updates amount of tenants a landlord has
-					
-					apartment.updateNumOfTenantsForApartment();//Update numbers of tenants for apartments
-					
-					t.setRoot(tenantUI(t));//Takes tenant user to tenant home page
 				}
 			}
 		});

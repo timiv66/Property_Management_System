@@ -217,6 +217,55 @@ public class Apartment {
 			return rent;
 		}
 	
+		public int numOfTenantsFromDB(String apartName) {
+			int numOfTenants = 0;
+			Connection conn = null;
+			Statement numOfTenantsStmt = null;
+			
+			String numOfTenantsSQL = "SELECT num_of_tenants FROM apartments WHERE apartment_name = '" + apartName + "'" ;
+			
+			try {
+				conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+				
+				numOfTenantsStmt = conn.createStatement();
+				ResultSet numOfTenantsRS = numOfTenantsStmt.executeQuery(numOfTenantsSQL);
+				
+				while(numOfTenantsRS.next()) {
+					numOfTenants = numOfTenantsRS.getInt(1);
+				}
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return numOfTenants;
+		}
+		
+		public int maxNumOfTenantsFromDB(String apartName) {
+			int maxNumOfTenants = 0;
+			Connection conn = null;
+			Statement maxNumOfTenantsStmt = null;
+			
+			String maxNumOfTenantsSQL = "SELECT max_num_of_tenants FROM apartments WHERE apartment_name = '" + apartName + "'" ;
+			
+			try {
+				conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+				
+				maxNumOfTenantsStmt = conn.createStatement();
+				ResultSet maxNumOfTenantsRS = maxNumOfTenantsStmt.executeQuery(maxNumOfTenantsSQL);
+				
+				while(maxNumOfTenantsRS.next()) {
+					maxNumOfTenants = maxNumOfTenantsRS.getInt(1);
+				}
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return maxNumOfTenants;
+		}
 	
 	
 
