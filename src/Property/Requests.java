@@ -19,11 +19,13 @@ public class Requests {
 	final String DB_PASSWORD = "Tobi4timi$";  // Use your MySQL password
 	
 
-	public boolean addRequestToDB(Tenant tenant, Lease lease, String location, String description ,String category, String date) {
+	public int addRequestToDB(Tenant tenant, Lease lease, String location, String description ,String category, String date) {
 		String requestId = generateRequestID();
 		int tenantId = tenant.getTenantIdFromDB();
 		int landlordId = lease.getLandlordIDFromLease(tenant);
 		String apartName = lease.getApartNameFromLease(tenant);
+		
+		int result = 0;
 		
 		Connection conn = null;
 		PreparedStatement requestPstmt = null;
@@ -42,20 +44,14 @@ public class Requests {
 			requestPstmt.setString(6, apartName);
 			requestPstmt.setInt(7, tenantId);
 			requestPstmt.setInt(8, landlordId);
-			int result = requestPstmt.executeUpdate();
-			
-			if (result == 0) {
-				return false;
-			}else {
-				return true;
-			}
+			result = requestPstmt.executeUpdate();
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-	    return true;
+	    return result;
 	}
 	
 	public String getTenantNameFromRequests(String requestId) {

@@ -1731,23 +1731,29 @@ public class Property_FX extends Application{
 		sendBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				String location = requestLocCB.getValue();
-				String category = requestCatCB.getValue();
-				String description = descripTxtF.getText();
-				
-				LocalDate starDateVal = dateTxtF.getValue();//Storing start date choice in String variable
-				String startDate = String.valueOf(starDateVal);
-				
-				boolean result = requests.addRequestToDB(tenant, lease, location, description, category, startDate);
-				
-				if (result = true) {
+				if(requestLocCB.getValue() == null || requestCatCB.getValue() == null || descripTxtF.getText() == null || dateTxtF.getValue() == null) {
 					conformationTxt.setVisible(true);
-					conformationTxt.setText("Your request has been sent");
-				}else if(result = false) {
-					conformationTxt.setVisible(true);
-					conformationTxt.setText("Your request has not been sent");
-
+					conformationTxt.setText("Please input all information");
+				}else {
+					String location = requestLocCB.getValue();
+					String category = requestCatCB.getValue();
+					String description = descripTxtF.getText();
+					
+					LocalDate starDateVal = dateTxtF.getValue();//Storing start date choice in String variable
+					String startDate = String.valueOf(starDateVal);
+					
+					int result = requests.addRequestToDB(tenant, lease, location, description, category, startDate);
+					
+					if (result == 1) {
+						conformationTxt.setVisible(true);
+						conformationTxt.setText("Your request has been sent");
+					}else if(result == 0) {
+						conformationTxt.setVisible(true);
+						conformationTxt.setText("Your request has not been sent");
+					}
 				}
+				
+				
 			}
 		});
 		
