@@ -18,64 +18,7 @@ public class Requests {
 	final String DB_USER = "root";  // Use your MySQL username
 	final String DB_PASSWORD = "Tobi4timi$";  // Use your MySQL password
 	
-	String requestID, requestDescrip, apartName, tenantID, landlordID, status, dateCreated;
 
-	public String getRequestID() {
-		return requestID;
-	}
-
-	public void setRequestID(String requestID) {
-		this.requestID = requestID;
-	}
-
-	public String getRequestDescrip() {
-		return requestDescrip;
-	}
-
-	public void setRequestDescrip(String requestDescrip) {
-		this.requestDescrip = requestDescrip;
-	}
-
-	public String getApartName() {
-		return apartName;
-	}
-
-	public void setApartName(String apartName) {
-		this.apartName = apartName;
-	}
-
-	public String getTenantID() {
-		return tenantID;
-	}
-
-	public void setTenantID(String tenantID) {
-		this.tenantID = tenantID;
-	}
-
-	public String getLandlordID() {
-		return landlordID;
-	}
-
-	public void setLandlordID(String landlordID) {
-		this.landlordID = landlordID;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public String getDateCreated() {
-		return dateCreated;
-	}
-
-	public void setDateCreated(String dateCreated) {
-		this.dateCreated = dateCreated;
-	}
-	
 	public boolean addRequestToDB(Tenant tenant, Lease lease, String location, String description ,String category, String date) {
 		String requestId = generateRequestID();
 		int tenantId = tenant.getTenantIdFromDB();
@@ -193,6 +136,30 @@ public class Requests {
 		return location;
 	}
 	
+	public String getCategoryFromRequests(String requestId) {
+		String category = null;
+		
+		Connection conn = null;
+		Statement categoryStmt = null;
+		
+		String categorySQL = "SELECT request_category FROM requests WHERE request_ID = " + requestId;
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			
+			categoryStmt = conn.createStatement();
+			ResultSet categoryRS = categoryStmt.executeQuery(categorySQL);
+			
+			while(categoryRS.next()) {
+				category = categoryRS.getString(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return category;
+	}
+	
 	public String getDescriptionFromRequests(String requestId) {
 		String description = null;
 		
@@ -282,6 +249,23 @@ public class Requests {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void deleteRequestFromDB(String requestId) {
+		Connection conn = null;
+		Statement delRequestStmt = null;
+		
+		String delRequestSQL = "DELETE FROM requests WHERE request_ID = " + requestId;
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			delRequestStmt = conn.createStatement();
+			delRequestStmt.execute(delRequestSQL);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	

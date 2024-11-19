@@ -155,6 +155,32 @@ public class Tenant {
 		return tenantPhone;
 	}
 	
+	public List<String> getAllRequestIDForOneTenant() {
+		List<String> list = new ArrayList<String>();
+		int tenantId = getTenantIdFromDB();
+		
+		Connection conn = null;
+		Statement requestsStmt = null;
+		
+		String requestsSQL = "SELECT request_ID FROM requests WHERE tenant_ID = " + tenantId;
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			requestsStmt = conn.createStatement();
+			ResultSet requestsRS = requestsStmt.executeQuery(requestsSQL);
+			
+			while(requestsRS.next()) {
+				String a = requestsRS.getString("request_ID");
+				list.add(a);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
 	//Updates landlordID for tenant users
 	public void updateLandlordIdForTenant(Lease lease, Tenant tenant) {
 		int landlordId = lease.getLandlordIDFromLease(tenant);

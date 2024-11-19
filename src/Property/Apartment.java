@@ -66,9 +66,11 @@ public class Apartment {
 	
 	
 	//Adds new apartment to database
-	public void insertApartToDB(String apartName, String location, int maxAmtOfTenants, String apartType, int stars, int landlordId) {
+	public int insertApartToDB(String apartName, String location, int maxAmtOfTenants, String apartType, int stars, int landlordId) {
 		Connection conn = null;
 		PreparedStatement apartmentStmt = null;
+		
+		int update = 0;
 		
 		//SQL Commands 
 	    String apartSQL = "INSERT INTO apartments (apartment_name, location, max_num_of_tenants, apartment_type, stars, landlord_ID) VALUES (?, ?, ?, ?, ?, ?)";
@@ -82,11 +84,13 @@ public class Apartment {
 			apartmentStmt.setString(4, apartType);
 			apartmentStmt.setInt(5, stars);
 			apartmentStmt.setInt(6, landlordId);
-			apartmentStmt.executeUpdate();
+			update = apartmentStmt.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	    
+	    return update;
 	}
 	
 	//Get all apartment names
