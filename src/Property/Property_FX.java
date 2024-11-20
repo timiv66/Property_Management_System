@@ -238,7 +238,7 @@ public class Property_FX extends Application{
 		Text errorMsg = new Text("");
 		errorMsg.setVisible(false);
 		errorMsg.setTranslateX(3);
-		errorMsg.setTranslateY(230);
+		errorMsg.setTranslateY(240);
 		
 		//Name field
 		Label nameLbl = new Label("Name: ");
@@ -309,13 +309,11 @@ public class Property_FX extends Application{
 						landlord.setEmail(inputedEmail);
 						landlord.setPassword(inputedPassword);
 						landlord.setPhone(inputedPhone);
-						
 						t.setRoot(landlordRegApart(t));
 					//Display error message if format is wrong	
 					}else {
 						errorMsg.setVisible(true);
 						errorMsg.setText("Please make sure that all information is correctly formatted");
-						
 					}
 				}
 			}
@@ -463,11 +461,6 @@ public class Property_FX extends Application{
 						errorMsg.setText("Apartment could not be added. Please try to input again");
 					}
 				}
-				
-				
-				
-				
-				
 				
 			}
 		});
@@ -1006,10 +999,6 @@ public class Property_FX extends Application{
 		return viewLandlordAccPane;
 	}
 	
-	
-	
-	
-	
 	//Where new tenants can create a new tenant account
 	public Pane newTenantAcc (Scene t) {
 			
@@ -1065,6 +1054,11 @@ public class Property_FX extends Application{
 		TextField phoneTxtF = new TextField();
 		phoneTxtF.setTranslateX(70);
 		phoneTxtF.setTranslateY(137);
+		
+		Text errorMsg = new Text("");
+		errorMsg.setVisible(false);
+		errorMsg.setTranslateX(3);
+		errorMsg.setTranslateY(240);
 			
 		//adds new tenant user to database;
 		Button createTenantAccBtn = new Button("Create Account");
@@ -1074,29 +1068,31 @@ public class Property_FX extends Application{
 		createTenantAccBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				//Inputed information from users
-				String inputedName = nameTxtF.getText();
-				String inputedEmail = emailTxtF.getText();
-				String inputedPassword = passwordTxtF.getText();
-				String inputedPhone = phoneTxtF.getText();
-					
-				//Checking in user inputed information is written correctly
-				if(inputedName.matches("^[A-Z][a-z]+ [A-Z][a-z]+$") && inputedEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
-						&& inputedPassword.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{7,}$") && inputedPhone.matches("^(\\+?\\d{1,3}[-.\\s]?)?(\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4})$")) {
-					tenant.insertTenantToDB(inputedName, inputedEmail, inputedPassword, inputedPhone); //Adding new tenant to database
-						
-					//Adding new tenant info to tenant object
-					tenant.setName(inputedName);
-					tenant.setEmail(inputedEmail);
-					tenant.setPassword(inputedPassword);
-					tenant.setPhone(inputedPhone);
-					t.setRoot(tenantMakeLease(t)); //Takes new tenant user to make lease page
-						
-						
-						
-				//Display error message if format is wrong	
+				if(nameTxtF.getText().isEmpty() || emailTxtF.getText().isEmpty() || passwordTxtF.getText().isEmpty() || phoneTxtF.getText().isEmpty()) {
+					errorMsg.setVisible(true);
+					errorMsg.setText("Please input all information");
 				}else {
+					String inputedName = nameTxtF.getText();
+					String inputedEmail = emailTxtF.getText();
+					String inputedPassword = passwordTxtF.getText();
+					String inputedPhone = phoneTxtF.getText();
+					
+					//Checking in user inputed information is written correctly
+					if(inputedName.matches("^[A-Z][a-z]+ [A-Z][a-z]+$") && inputedEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
+							&& inputedPassword.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{7,}$") && inputedPhone.matches("^(\\+?\\d{1,3}[-.\\s]?)?(\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4})$")) {
+						landlord.insertLandlordToDB(inputedName, inputedEmail, inputedPassword, inputedPhone); //Adds new landlord user to database
 						
+						//Setting landlord object values to inputed information
+						landlord.setName(inputedName);
+						landlord.setEmail(inputedEmail);
+						landlord.setPassword(inputedPassword);
+						landlord.setPhone(inputedPhone);
+						t.setRoot(landlordRegApart(t));
+					//Display error message if format is wrong	
+					}else {
+						errorMsg.setVisible(true);
+						errorMsg.setText("Please make sure that all information is correctly formatted");
+					}
 				}
 			 }
 		 });
@@ -1120,7 +1116,7 @@ public class Property_FX extends Application{
 		Background background = new Background(background_fill);
 		newTenantAccPane.setBackground(background);
 			
-		newTenantAccPane.getChildren().addAll(titleLbl,line,nameLbl,nameTxtF,emailLbl,emailTxtF,passwordLbl,passwordTxtF,phoneLbl,phoneTxtF,createTenantAccBtn,backBtn);
+		newTenantAccPane.getChildren().addAll(titleLbl,line,nameLbl,nameTxtF,emailLbl,emailTxtF,passwordLbl,passwordTxtF,phoneLbl,phoneTxtF,createTenantAccBtn,backBtn,errorMsg);
 		return newTenantAccPane;
 	}
 	
@@ -1874,9 +1870,57 @@ public class Property_FX extends Application{
 			}
 		});
 		
+		
+		
+		Text deleteAccTxt = new Text("Are you sure you want to delete your account:");
+		deleteAccTxt.setTranslateX(3);
+		deleteAccTxt.setTranslateY(300);
+		deleteAccTxt.setVisible(false);
+		
+		Button deleteAccBtn = new Button("Delete Account");
+		deleteAccBtn.setTranslateX(290);
+		deleteAccBtn.setTranslateY(230);
+		
+		Button yesBtn = new Button("Yes");
+		yesBtn.setTranslateX(250);
+		yesBtn.setTranslateY(283);
+		yesBtn.setVisible(false);
+		
+		Button noBtn = new Button("No");
+		noBtn.setTranslateX(295);
+		noBtn.setTranslateY(283);
+		noBtn.setVisible(false);
+		
+		deleteAccBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.getWindow().setHeight(400);
+				deleteAccTxt.setVisible(true);
+				yesBtn.setVisible(true);
+				noBtn.setVisible(true);
+			}
+		});
+		
+		yesBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				requests.deleteAllRequestForTenantFromDB(tenant);
+				lease.deleteLeaseFromDB(tenant);
+				tenant.deleteTenantFromDB();
+				t.setRoot(login(t));
+			}
+		});
+		
+		noBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.getWindow().setHeight(300);
+			}
+		});
+		
 		Pane teanantAccInfoPane = new Pane();
 		
-		teanantAccInfoPane.getChildren().addAll(titleLbl,line,tenantIdLbl,nameLbl,emailLbl,chgEmailBtn,passwordLbl,chgPasswrdBtn,phoneLbl,chgPhoneBtn,backBtn);
+		teanantAccInfoPane.getChildren().addAll(titleLbl,line,tenantIdLbl,nameLbl,emailLbl,chgEmailBtn,passwordLbl,chgPasswrdBtn,phoneLbl,chgPhoneBtn,backBtn,deleteAccBtn,deleteAccTxt,yesBtn,noBtn);
 		return teanantAccInfoPane;
 	}
 	

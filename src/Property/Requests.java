@@ -264,6 +264,24 @@ public class Requests {
 		
 	}
 	
+	public void deleteAllRequestForTenantFromDB(Tenant tenant) {
+		int tenantId = tenant.getTenantIdFromDB();
+		Connection conn = null;
+		Statement delRequestStmt = null;
+		
+		String delRequestSQL = "DELETE FROM requests WHERE tenant_ID = " + tenantId;
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			delRequestStmt = conn.createStatement();
+			delRequestStmt.execute(delRequestSQL);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	
 
 	public static String generateRequestID() {

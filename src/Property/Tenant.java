@@ -403,6 +403,25 @@ public class Tenant {
 		return true;
 	}
 	
+	public void deleteTenantFromDB() {
+		int tenantId = getTenantIdFromDB();
+		
+		Connection conn = null;
+		Statement delTenantStmt = null;
+		
+		String delTenantSQL = "DELETE FROM tenants WHERE tenant_ID = " + tenantId;
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			delTenantStmt = conn.createStatement();
+			delTenantStmt.execute(delTenantSQL);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	
 	
 	

@@ -295,6 +295,25 @@ public class Lease {
 		return landlordName;
 	}
 	
+	public void deleteLeaseFromDB(Tenant tenant) {
+		String leaseId = getLeaseIdFromLease(tenant);
+		
+		Connection conn = null;
+		Statement delLeaseStmt = null;
+		
+		String delLeasetSQL = "DELETE FROM leases WHERE lease_ID = " + leaseId;
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			delLeaseStmt = conn.createStatement();
+			delLeaseStmt.execute(delLeasetSQL);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	
 	//Creates leaseID for database
 	public static String generateLeaseID() {
