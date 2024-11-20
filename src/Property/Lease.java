@@ -297,16 +297,64 @@ public class Lease {
 	
 	public void deleteLeaseFromDB(Tenant tenant) {
 		String leaseId = getLeaseIdFromLease(tenant);
-		
+		String apartName = getApartNameFromLease(tenant);
+		int numOfTenants = 0;
+
 		Connection conn = null;
 		Statement delLeaseStmt = null;
+		Statement countNumOfTenantsStmt = null;
+		Statement updateNumOfTenantsStmt = null;
 		
-		String delLeasetSQL = "DELETE FROM leases WHERE lease_ID = " + leaseId;
+		String delLeaseSQL = "DELETE FROM leases WHERE lease_ID = " + leaseId;
+		String countNumOfTenantsSQL = "SELECT COUNT(tenant_ID) FROM leases WHERE apartment_name = '" + apartName + "'";
+		
 		
 		try {
 			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			
 			delLeaseStmt = conn.createStatement();
-			delLeaseStmt.execute(delLeasetSQL);
+			delLeaseStmt.execute(delLeaseSQL);
+			
+			countNumOfTenantsStmt = conn.createStatement();
+			ResultSet countNumOfTenantsRS = countNumOfTenantsStmt.executeQuery(countNumOfTenantsSQL);
+			
+			while(countNumOfTenantsRS.next()) {
+				numOfTenants = countNumOfTenantsRS.getInt(1);
+			}
+			
+			String updateNumOfTenantsSQL = "UPDATE apartments SET num_of_tenants = " + numOfTenants + " WHERE apartment_name = '" + apartName + "'";
+			updateNumOfTenantsStmt = conn.createStatement();
+			updateNumOfTenantsStmt.execute(updateNumOfTenantsSQL);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void updateNumOfTenantsForApartments(Tenant tenant) {
+		String apartName = getApartNameFromLease(tenant);
+		
+		int numOfTenants = 0;
+		
+		Connection conn = null;
+		Statement countNumOfTenantsStmt = null;
+		Statement updateNumOfTenantsStmt = null;
+		
+		String countNumOfTenantsSQL = "SELECT COUNT(tenant_ID) FROM leases WHERE apartment_name = '" + apartName + "'";
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			countNumOfTenantsStmt = conn.createStatement();
+			ResultSet countNumOfTenantsRS = countNumOfTenantsStmt.executeQuery(countNumOfTenantsSQL);
+			
+			while(countNumOfTenantsRS.next()) {
+				numOfTenants = countNumOfTenantsRS.getInt(1);
+			}
+			String updateNumOfTenantsSQL = "UPDATE apartments SET num_of_tenants = " + numOfTenants + " WHERE apartment_name = '" + apartName + "'";
+			updateNumOfTenantsStmt = conn.createStatement();
+			updateNumOfTenantsStmt.execute(updateNumOfTenantsSQL);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

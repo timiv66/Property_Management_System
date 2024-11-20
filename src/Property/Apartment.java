@@ -166,32 +166,6 @@ public class Apartment {
 		return landlordID;
 	}
 	
-	public void updateNumOfTenantsForApartment() {
-		String apartName = getApartmentNameFromDB();
-		int numOfTenants = 0;
-		
-		Connection conn = null;
-		Statement countNumOfTenantsStmt = null;
-		Statement updateNumOfTenantsStmt = null;
-		
-		String countNumOfTenantsSQL = "SELECT COUNT(tenant_ID) FROM leases WHERE apartment_name = '" + apartName + "'";
-		
-		try {
-			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-			countNumOfTenantsStmt = conn.createStatement();
-			ResultSet countNumOfTenantsRS = countNumOfTenantsStmt.executeQuery(countNumOfTenantsSQL);
-			
-			while(countNumOfTenantsRS.next()) {
-				numOfTenants = countNumOfTenantsRS.getInt(1);
-			}
-			String updateNumOfTenantsSQL = "UPDATE apartments SET num_of_tenants = " + numOfTenants + " WHERE apartment_name = '" + apartName + "'";
-			updateNumOfTenantsStmt = conn.createStatement();
-			updateNumOfTenantsStmt.execute(updateNumOfTenantsSQL);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	
 	//Gets rent from joined table in database
 		public int getRentFromDB(String apartName) {

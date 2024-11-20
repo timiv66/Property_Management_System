@@ -1080,14 +1080,14 @@ public class Property_FX extends Application{
 					//Checking in user inputed information is written correctly
 					if(inputedName.matches("^[A-Z][a-z]+ [A-Z][a-z]+$") && inputedEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
 							&& inputedPassword.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{7,}$") && inputedPhone.matches("^(\\+?\\d{1,3}[-.\\s]?)?(\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4})$")) {
-						landlord.insertLandlordToDB(inputedName, inputedEmail, inputedPassword, inputedPhone); //Adds new landlord user to database
+						tenant.insertTenantToDB(inputedName, inputedEmail, inputedPassword, inputedPhone); //Adds new landlord user to database
 						
-						//Setting landlord object values to inputed information
-						landlord.setName(inputedName);
-						landlord.setEmail(inputedEmail);
-						landlord.setPassword(inputedPassword);
-						landlord.setPhone(inputedPhone);
-						t.setRoot(landlordRegApart(t));
+						//Setting tenant object values to inputed information
+						tenant.setName(inputedName);
+						tenant.setEmail(inputedEmail);
+						tenant.setPassword(inputedPassword);
+						tenant.setPhone(inputedPhone);
+						t.setRoot(tenantMakeLease(t));
 					//Display error message if format is wrong	
 					}else {
 						errorMsg.setVisible(true);
@@ -1121,7 +1121,7 @@ public class Property_FX extends Application{
 	}
 	
 	public Pane tenantMakeLease(Scene t) {
-		
+		t.getWindow().setHeight(300);
 		
 		Label titleLbl = new Label("Create New Lease");
 		titleLbl.setFont(titleFont);
@@ -1248,7 +1248,7 @@ public class Property_FX extends Application{
 						tenant.updateLandlordIdForTenant(lease, tenant);//Updates tenants's landlord
 						tenant.updateNumOfTenantsForLandandlord(lease, tenant);//Updates amount of tenants a landlord has
 						
-						apartment.updateNumOfTenantsForApartment();//Update numbers of tenants for apartments
+						lease.updateNumOfTenantsForApartments(tenant);//Update numbers of tenants for apartments
 						
 						t.setRoot(tenantUI(t));//Takes tenant user to tenant home page
 					}
@@ -1993,9 +1993,21 @@ public class Property_FX extends Application{
 			}
 		});
 		
+		Button newLeaseBtn = new Button("New Lease");
+		newLeaseBtn.setTranslateX(317);
+		newLeaseBtn.setTranslateY(335);
+		
+		newLeaseBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				lease.deleteLeaseFromDB(tenant);
+				t.setRoot(tenantMakeLease(t));
+			}
+		});
+		
 		Pane viewLeasePane = new Pane();
 		
-		viewLeasePane.getChildren().addAll(titleLbl,line,leaseIdLbl,apartNameLbl,leaseLengthLbl,rentLbl,leaseStartDateLbl,leaseEndDateLbl,landlordLbl,backBtn);
+		viewLeasePane.getChildren().addAll(titleLbl,line,leaseIdLbl,apartNameLbl,leaseLengthLbl,rentLbl,leaseStartDateLbl,leaseEndDateLbl,landlordLbl,backBtn,newLeaseBtn);
 		return viewLeasePane;
 	}
 	
