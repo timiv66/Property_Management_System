@@ -211,7 +211,7 @@ public class Property_FX extends Application{
 		
 		Pane loginPane = new Pane();
 		
-		BackgroundFill background_fill = new BackgroundFill(Color.DARKCYAN,CornerRadii.EMPTY, Insets.EMPTY); 
+		BackgroundFill background_fill = new BackgroundFill(Color.LIGHTBLUE,CornerRadii.EMPTY, Insets.EMPTY); 
 		Background background = new Background(background_fill);
 		loginPane.setBackground(background);
 		
@@ -333,7 +333,7 @@ public class Property_FX extends Application{
 		
 		Pane newLandlordAccPane = new Pane();
 		
-		BackgroundFill background_fill = new BackgroundFill(Color.DARKCYAN,CornerRadii.EMPTY, Insets.EMPTY); 
+		BackgroundFill background_fill = new BackgroundFill(Color.LIGHTBLUE,CornerRadii.EMPTY, Insets.EMPTY); 
 		Background background = new Background(background_fill);
 		newLandlordAccPane.setBackground(background);
 		
@@ -479,6 +479,10 @@ public class Property_FX extends Application{
 		
 		Pane landlordRegApartPane = new Pane();
 		
+		BackgroundFill background_fill = new BackgroundFill(Color.LIGHTBLUE,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		landlordRegApartPane.setBackground(background);
+		
 		landlordRegApartPane.getChildren().addAll(titleLbl,line,apartNameLbl,apartNameTxtF,locationLbl,locationTxtF,maxAmtLbl,maxAmtTxtF,apartTypeLbl,apartTypeCB,starsLbl,starCB,regApartBtn,backBtn,errorMsg);
 		return landlordRegApartPane;
 	}
@@ -578,6 +582,10 @@ public class Property_FX extends Application{
 			
 			
 		Pane landlordUiPane = new Pane();
+		
+		BackgroundFill background_fill = new BackgroundFill(Color.LIGHTBLUE,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		landlordUiPane.setBackground(background);
 			
 		landlordUiPane.getChildren().addAll(titleLbl,line,searchBtn,addApartBtn,logOutBtn,requestsBtn,accBtn);
 		return landlordUiPane;
@@ -689,6 +697,10 @@ public class Property_FX extends Application{
 		});
 		
 		Pane landlordSearchPane = new Pane();
+		
+		BackgroundFill background_fill = new BackgroundFill(Color.LIGHTBLUE,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		landlordSearchPane.setBackground(background);
 		
 		landlordSearchPane.getChildren().addAll(titleLbl,line,searchImg,searchLbl,searchTxtF,tenantRBtn,apartRBtn,searchBtn,resultTxt,backBtn);
 		return landlordSearchPane;
@@ -880,6 +892,10 @@ public class Property_FX extends Application{
 		
 		Pane viewRequestsPane = new Pane();
 		
+		BackgroundFill background_fill = new BackgroundFill(Color.LIGHTBLUE,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		viewRequestsPane.setBackground(background);
+		
 		viewRequestsPane.getChildren().addAll(titleLbl,line,requestLbl,requestIdCB,viewRequestBtn,errorMsg,backtBtn,tenantNameLbl,apartNameLbl,requestLocLbl,requestDesLbl,requestDateLbl,requestStatLbl,statusCB,setStatBtn,statusErrorMsg);
 		return viewRequestsPane;
 	}
@@ -994,6 +1010,10 @@ public class Property_FX extends Application{
 		});
 					
 		Pane viewLandlordAccPane = new Pane();
+		
+		BackgroundFill background_fill = new BackgroundFill(Color.LIGHTBLUE,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		viewLandlordAccPane.setBackground(background);
 		
 		viewLandlordAccPane.getChildren().addAll(titleLbl,line,landlordIdLbl,nameLbl,emailLbl,chgEmailBtn,passwordLbl,chgPasswrdBtn,phoneLbl,chgPhoneBtn,numOfApartmentsLbl,numOfTenantsLbl,backBtn);
 		return viewLandlordAccPane;
@@ -1112,7 +1132,7 @@ public class Property_FX extends Application{
 			
 		Pane newTenantAccPane = new Pane();
 			
-		BackgroundFill background_fill = new BackgroundFill(Color.DARKCYAN,CornerRadii.EMPTY, Insets.EMPTY); 
+		BackgroundFill background_fill = new BackgroundFill(Color.LIGHTBLUE,CornerRadii.EMPTY, Insets.EMPTY); 
 		Background background = new Background(background_fill);
 		newTenantAccPane.setBackground(background);
 			
@@ -1258,6 +1278,11 @@ public class Property_FX extends Application{
 		});
 		
 		Pane tenantMakeLeasePane = new Pane();
+		
+		BackgroundFill background_fill = new BackgroundFill(Color.LIGHTBLUE,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		tenantMakeLeasePane.setBackground(background);
+		
 		tenantMakeLeasePane.getChildren().addAll(titleLbl,line,apartComplexLbl,apartNameCB,leaseLengthLbl,leaseLengthCB,rentLbl,rentCB,rentBtn,dateLbl,dateTxtF,createLeaseBtn,errorMsg);
 		
 		return tenantMakeLeasePane;
@@ -1369,6 +1394,10 @@ public class Property_FX extends Application{
 		});
 		
 		Pane tenantUiPane = new Pane();
+		
+		BackgroundFill background_fill = new BackgroundFill(Color.LIGHTBLUE,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		tenantUiPane.setBackground(background);
 		
 		tenantUiPane.getChildren().addAll(titleLbl,line,searchBtn,activeRequestsBtn,requestsBtn,accBtn,leaseBtn,logOutBtn);
 		return tenantUiPane;
@@ -1483,6 +1512,10 @@ public class Property_FX extends Application{
 		
 		
 		Pane tenantSearchPane = new Pane();
+		
+		BackgroundFill background_fill = new BackgroundFill(Color.LIGHTBLUE,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		tenantSearchPane.setBackground(background);
 		
 		tenantSearchPane.getChildren().addAll(titleLbl,line,searchImg,searchLbl,searchTxtF,landlordRBtn,apartRBtn,searchBtn,resultTxt,backBtn);
 		return tenantSearchPane;
@@ -1646,6 +1679,11 @@ public class Property_FX extends Application{
 		
 		
 		Pane activeRequestsPane = new Pane();
+		
+		BackgroundFill background_fill = new BackgroundFill(Color.LIGHTBLUE,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		activeRequestsPane.setBackground(background);
+		
 		activeRequestsPane.getChildren().addAll(titleLbl,line,requestLbl,requestIdCB,errorMsg,viewRequestBtn,requestLocLbl,requestCatLbl,requestDesLbl,requestDateLbl,requestStatLbl,backtBtn,deleteBtn);
 		return activeRequestsPane;
 	}
@@ -1769,6 +1807,10 @@ public class Property_FX extends Application{
 		});
 		
 		Pane makeRequestPane = new Pane();
+		
+		BackgroundFill background_fill = new BackgroundFill(Color.LIGHTBLUE,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		makeRequestPane.setBackground(background);
 		
 		makeRequestPane.getChildren().addAll(titleLbl,line,requestLocLbl,requestLocCB,requestCatLbl,requestCatCB,descripLbl,descripTxtF,dateCreatedLbl,dateTxtF,backBtn,sendBtn,conformationTxt);
 		return makeRequestPane;
@@ -1920,6 +1962,10 @@ public class Property_FX extends Application{
 		
 		Pane teanantAccInfoPane = new Pane();
 		
+		BackgroundFill background_fill = new BackgroundFill(Color.LIGHTBLUE,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		teanantAccInfoPane.setBackground(background);
+		
 		teanantAccInfoPane.getChildren().addAll(titleLbl,line,tenantIdLbl,nameLbl,emailLbl,chgEmailBtn,passwordLbl,chgPasswrdBtn,phoneLbl,chgPhoneBtn,backBtn,deleteAccBtn,deleteAccTxt,yesBtn,noBtn);
 		return teanantAccInfoPane;
 	}
@@ -2000,12 +2046,17 @@ public class Property_FX extends Application{
 		newLeaseBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
+				requests.deleteAllRequestForTenantFromDB(tenant);
 				lease.deleteLeaseFromDB(tenant);
 				t.setRoot(tenantMakeLease(t));
 			}
 		});
 		
 		Pane viewLeasePane = new Pane();
+		
+		BackgroundFill background_fill = new BackgroundFill(Color.LIGHTBLUE,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		viewLeasePane.setBackground(background);
 		
 		viewLeasePane.getChildren().addAll(titleLbl,line,leaseIdLbl,apartNameLbl,leaseLengthLbl,rentLbl,leaseStartDateLbl,leaseEndDateLbl,landlordLbl,backBtn,newLeaseBtn);
 		return viewLeasePane;
@@ -2103,6 +2154,10 @@ public class Property_FX extends Application{
 		});
 		
 		Pane chgLandlordEmailPane = new Pane();
+		
+		BackgroundFill background_fill = new BackgroundFill(Color.LIGHTBLUE,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		chgLandlordEmailPane.setBackground(background);
 		
 		chgLandlordEmailPane.getChildren().addAll(titleLbl,line,newLLEmailLbl,newLLEmailTxtF,reEnterEmailLbl,reEnterEmailTxtF,enterBtn,backBtn,errorMsg);
 		return chgLandlordEmailPane;
@@ -2208,6 +2263,10 @@ public class Property_FX extends Application{
 		
 		Pane chgUserPasswordPane = new Pane();
 		
+		BackgroundFill background_fill = new BackgroundFill(Color.LIGHTBLUE,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		chgUserPasswordPane.setBackground(background);
+		
 		chgUserPasswordPane.getChildren().addAll(titleLbl,line,newLLPasswrdLbl,newLLPasswrdTxtF,reEnterPasswrdLbl,reEnterPasswrdTxtF,enterBtn,backBtn,errorMsg);
 		return chgUserPasswordPane;
 		
@@ -2309,9 +2368,16 @@ public class Property_FX extends Application{
 		
 		Pane chgUserPhonePane = new Pane();
 		
+		BackgroundFill background_fill = new BackgroundFill(Color.LIGHTBLUE,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		chgUserPhonePane.setBackground(background);
+		
 		chgUserPhonePane.getChildren().addAll(titleLbl,line,newLLPhoneLbl,newLLPhoneTxtF,reEnterPhoneLbl,reEnterPhoneTxtF,enterBtn,backBtn,errorMsg);
 		return chgUserPhonePane;
 		
 	}
+	
+	//Lebron James lj23@aol.com TheGoat0623! 5051234897
+	
 
 }
