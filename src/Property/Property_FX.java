@@ -490,7 +490,7 @@ public class Property_FX extends Application{
 	//Home page for landlord users
 	public Pane landlordUI(Scene t) {
 		t.getWindow().setWidth(410);
-		t.getWindow().setHeight(350);
+		t.getWindow().setHeight(390);
 			
 		Label titleLbl = new Label("Landlord Home Page");
 		titleLbl.setFont(titleFont);
@@ -556,16 +556,33 @@ public class Property_FX extends Application{
 		accBtn.setPrefWidth(170);
 		accBtn.setFont(btnFont);
 		
+
 		accBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
 				t.setRoot(viewLandlordAcc(t)); 
 			}
 		});
-			
+		
+		Button chargeTentBtn = new Button("Charge Tenants");
+		chargeTentBtn.setTranslateX(115);
+		chargeTentBtn.setTranslateY(280);
+		chargeTentBtn.setPrefHeight(50);
+		chargeTentBtn.setPrefWidth(170);
+		chargeTentBtn.setFont(btnFont);
+		
+		
+		chargeTentBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(charges(t)); 
+			}
+		});
+		
+		
 		Button logOutBtn = new Button("Logout");
 		logOutBtn.setTranslateX(3);
-		logOutBtn.setTranslateY(280);
+		logOutBtn.setTranslateY(320);
 			
 		logOutBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -587,7 +604,7 @@ public class Property_FX extends Application{
 		Background background = new Background(background_fill);
 		landlordUiPane.setBackground(background);
 			
-		landlordUiPane.getChildren().addAll(titleLbl,line,searchBtn,addApartBtn,logOutBtn,requestsBtn,accBtn);
+		landlordUiPane.getChildren().addAll(titleLbl,line,searchBtn,addApartBtn,logOutBtn,requestsBtn,accBtn,chargeTentBtn);
 		return landlordUiPane;
 	}
 	
@@ -1017,6 +1034,144 @@ public class Property_FX extends Application{
 		
 		viewLandlordAccPane.getChildren().addAll(titleLbl,line,landlordIdLbl,nameLbl,emailLbl,chgEmailBtn,passwordLbl,chgPasswrdBtn,phoneLbl,chgPhoneBtn,numOfApartmentsLbl,numOfTenantsLbl,backBtn);
 		return viewLandlordAccPane;
+	}
+	
+	public Pane charges(Scene t) {
+		t.getWindow().setHeight(120);
+		
+		Label titleLbl = new Label("Charge Tenants");
+		titleLbl.setFont(titleFont);
+		titleLbl.setTranslateX(3);
+			
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);	
+		
+		Label tenantLbl = new Label("Choose Tenant:");
+		tenantLbl.setTranslateX(3);
+		tenantLbl.setTranslateY(38);
+		tenantLbl.setFont(btnFont);
+		
+		List<String> tenantIdList = new ArrayList<String>();
+		tenantIdList = landlord.getAllTenantIdsForLandlord();
+		
+		
+		ChoiceBox<String> tenantIdCB = new ChoiceBox<String>();
+		tenantIdCB.setTranslateX(147);
+		tenantIdCB.setTranslateY(38);
+		
+		//Adds all requestId's from array list to choice box
+		int i = 0;
+		while(i < tenantIdList.size()) {
+			tenantIdCB.getItems().add(tenantIdList.get(i));
+			i++;
+		}
+		
+		Text errorMsg1 = new Text("");
+		errorMsg1.setVisible(false);
+		errorMsg1.setTranslateX(3);
+		errorMsg1.setTranslateY(75);
+		
+		Text errorMsg2 = new Text("");
+		errorMsg2.setVisible(false);
+		errorMsg2.setTranslateX(3);
+		errorMsg2.setTranslateY(150);
+		
+		//Name of the apartment for the request
+		Label tenantNameLbl = new Label();
+		tenantNameLbl.setTranslateX(3);
+		tenantNameLbl.setTranslateY(77);
+		tenantNameLbl.setFont(btnFont);
+		tenantNameLbl.setVisible(false);
+		
+		Label amtToChargeLbl = new Label();
+		amtToChargeLbl.setTranslateX(3);
+		amtToChargeLbl.setTranslateY(110);
+		amtToChargeLbl.setFont(btnFont);
+		amtToChargeLbl.setVisible(false);
+		
+		TextField amtToChargeTxtF = new TextField();
+		amtToChargeTxtF.setTranslateX(185);
+		amtToChargeTxtF.setTranslateY(110);
+		amtToChargeTxtF.setVisible(false);
+		
+		Button chargeBtn = new Button("Charge");
+		chargeBtn.setTranslateX(330);
+		chargeBtn.setTranslateY(160);
+		chargeBtn.setVisible(false);
+		
+		chargeBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				if (amtToChargeTxtF.getText().isEmpty()) {
+					errorMsg2.setText("Please enter an amount");
+					errorMsg2.setVisible(true);
+				}else if (!amtToChargeTxtF.getText().matches("^(\\d+)(\\.\\d+)?$")) {
+					errorMsg2.setText("Please enter a decimal or whole number.");
+					errorMsg2.setVisible(true);
+				}else {
+					double bal = Double.parseDouble(amtToChargeTxtF.getText());
+					String tenantId = tenantIdCB.getValue();
+					
+					landlord.updateBalance(tenantId, bal);
+					errorMsg2.setVisible(true);
+					errorMsg2.setText("Tenant's balance has been updated to $" + landlord.getBalance(tenantId));
+				}
+			}
+		});
+		
+		
+		
+		//Button to view the info of specific request
+		Button chooseTenantBtn = new Button("Select");
+		chooseTenantBtn.setTranslateX(255);
+		chooseTenantBtn.setTranslateY(38);
+		
+		chooseTenantBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				if (tenantIdCB.getValue() == null) {
+					errorMsg1.setVisible(true);
+					errorMsg1.setText("Please select a tenant");
+				}else {
+					errorMsg1.setVisible(false);
+					t.getWindow().setHeight(230);
+					
+					String tenantName = landlord.getTenantNameFromId(tenantIdCB.getValue());
+					tenantNameLbl.setText("Tenant Name: " + tenantName);
+					tenantNameLbl.setVisible(true);
+					
+					amtToChargeLbl.setText("Amount to Charge:$");
+					amtToChargeLbl.setVisible(true);
+					amtToChargeTxtF.setVisible(true);
+					
+					chargeBtn.setVisible(true);
+				}
+			}
+		});
+		
+		
+		
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(350);
+		backBtn.setTranslateY(38);	
+		
+		backBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(landlordUI(t));
+			}
+		});
+		
+		Pane chargesPane = new Pane();
+		
+		chargesPane.getChildren().addAll(titleLbl,line,tenantLbl,tenantIdCB,errorMsg1,errorMsg2,chooseTenantBtn,tenantNameLbl,amtToChargeLbl,amtToChargeTxtF,chargeBtn,backBtn);
+		return chargesPane;
 	}
 	
 	//Where new tenants can create a new tenant account
@@ -2378,6 +2533,8 @@ public class Property_FX extends Application{
 	}
 	
 	//Lebron James lj23@aol.com TheGoat0623! 5051234897
+	
+	//Tiny Towers Chicago 
 	
 
 }

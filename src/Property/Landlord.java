@@ -512,4 +512,103 @@ public class Landlord {
 		
 	}
 	
+	public List<String> getAllTenantIdsForLandlord() {
+		List<String> list = new ArrayList<String>();
+		int landlordId = getLandlordIdFromDB();
+		
+		Connection conn = null;
+		Statement tenantIdStmt = null;
+		
+		String tenantIdSQL = "SELECT tenant_ID FROM tenants WHERE landlord_ID = " + landlordId;
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			tenantIdStmt = conn.createStatement();
+			ResultSet tenantIdRS = tenantIdStmt.executeQuery(tenantIdSQL);
+			
+			while(tenantIdRS.next()) {
+				String a = tenantIdRS.getString("tenant_ID");
+				list.add(a);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
+		
+	}
+	
+	public String getTenantNameFromId(String id) {
+		String name = null;
+		
+		Connection conn = null;
+		Statement tenantNameStmt = null;
+		
+		String tenantNameSQL = "SELECT full_name FROM tenants WHERE tenant_ID = " + id;
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			tenantNameStmt = conn.createStatement();
+			ResultSet tenantNameRS = tenantNameStmt.executeQuery(tenantNameSQL);
+			
+			while(tenantNameRS.next()) {
+				name = tenantNameRS.getString("full_name");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return name;
+		
+		
+	}
+	public double getBalance(String tenantId) {
+		double bal = 0;
+		
+		Connection conn = null;
+		Statement balStmt = null;
+		
+		String balSQL = "SELECT balance FROM tenants WHERE tenant_ID = " + tenantId;
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			balStmt = conn.createStatement();
+			ResultSet balRS = balStmt.executeQuery(balSQL);
+			
+			while(balRS.next()) {
+				bal = balRS.getDouble("balance");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return bal;
+	}
+	
+	public void updateBalance(String tenantId, double amt) {
+		
+		Connection conn = null;
+		Statement updateBalStmt = null;
+		
+		double currBal = getBalance(tenantId);
+		double newBal = currBal + amt;
+
+		String updateBalSQL = "UPDATE tenants SET balance = " + newBal + " WHERE tenant_ID = " + tenantId;
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			updateBalStmt = conn.createStatement();
+			updateBalStmt.execute(updateBalSQL);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
 }
